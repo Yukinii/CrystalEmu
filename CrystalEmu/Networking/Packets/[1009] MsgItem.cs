@@ -7,12 +7,13 @@ namespace CrystalEmu.Networking.Packets
     {
         public static byte[] MsgItem(uint UID, uint Value, MsgItemType Type)
         {
-            var P = new Packet(PacketID.MsgItem, 20);
-
-            P.Write(UID);
-            P.Write(Value);
-            P.Write((uint) Type);
-            return P.Finish();
+            using (var P = new Packet(PacketID.MsgItem, 20))
+            {
+                P.Write(UID);
+                P.Write(Value);
+                P.Write((uint) Type);
+                return P.Finish();
+            }
         }
     }
 }
