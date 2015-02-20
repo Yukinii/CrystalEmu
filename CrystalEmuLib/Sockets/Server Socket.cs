@@ -159,7 +159,10 @@ namespace CrystalEmuLib.Sockets
             }
         }
 
-        public bool Enabled => _Enabled;
+        public bool Enabled
+        {
+            get { return _Enabled; }
+        }
 
         public ushort Port
         {

@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using CrystalEmuLib.Enums;
 
 namespace CrystalEmuLib.Networking.Packets
 {
-    public class Packet
+    public class Packet : IDisposable
     {
         public readonly MemoryStream Stream;
         public readonly BinaryWriter Writer;
@@ -101,13 +102,17 @@ namespace CrystalEmuLib.Networking.Packets
 
         public byte[] Finish()
         {
+            return Buffer;
+        }
+
+        public void Dispose()
+        {
             Writer.Flush();
             Stream.Flush();
             Stream.Close();
             Writer.Close();
             Stream.Dispose();
             Writer.Dispose();
-            return Buffer;
         }
     }
 }
