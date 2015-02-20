@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22512.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrystalEmuMap", "CrystalEmu\CrystalEmuMap.csproj", "{AD3E0DFB-EF9D-42DF-AE8A-E3BF18A586D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrystalEmuLogin", "CrystalEmuLogin\CrystalEmuLogin.csproj", "{D7E41972-AB2F-421E-9F17-D7469BAEA311}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrystalEmuMessage", "CrystalEmuMessage\CrystalEmuMessage.csproj", "{32AAE328-15B9-4631-A242-22437F97ED20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrystalEmuDatabase", "CrystalEmuDatabase\CrystalEmuDatabase.csproj", "{D4342EBC-7883-41DF-A814-9B37CDB36114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrystalEmuLib", "CrystalEmuLib\CrystalEmuLib.csproj", "{323EC697-F49C-4F6F-AF5F-C76959F46EC3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD3E0DFB-EF9D-42DF-AE8A-E3BF18A586D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3E0DFB-EF9D-42DF-AE8A-E3BF18A586D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3E0DFB-EF9D-42DF-AE8A-E3BF18A586D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3E0DFB-EF9D-42DF-AE8A-E3BF18A586D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7E41972-AB2F-421E-9F17-D7469BAEA311}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7E41972-AB2F-421E-9F17-D7469BAEA311}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7E41972-AB2F-421E-9F17-D7469BAEA311}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7E41972-AB2F-421E-9F17-D7469BAEA311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32AAE328-15B9-4631-A242-22437F97ED20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32AAE328-15B9-4631-A242-22437F97ED20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32AAE328-15B9-4631-A242-22437F97ED20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32AAE328-15B9-4631-A242-22437F97ED20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4342EBC-7883-41DF-A814-9B37CDB36114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4342EBC-7883-41DF-A814-9B37CDB36114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4342EBC-7883-41DF-A814-9B37CDB36114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4342EBC-7883-41DF-A814-9B37CDB36114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{323EC697-F49C-4F6F-AF5F-C76959F46EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323EC697-F49C-4F6F-AF5F-C76959F46EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323EC697-F49C-4F6F-AF5F-C76959F46EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323EC697-F49C-4F6F-AF5F-C76959F46EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 6
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://psiware.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = CrystalEmu\\CrystalEmuMap.csproj
+		SccProjectName1 = CrystalEmu
+		SccLocalPath1 = CrystalEmu
+		SccProjectUniqueName2 = CrystalEmuDatabase\\CrystalEmuDatabase.csproj
+		SccProjectName2 = CrystalEmuDatabase
+		SccLocalPath2 = CrystalEmuDatabase
+		SccProjectUniqueName3 = CrystalEmuLib\\CrystalEmuLib.csproj
+		SccProjectName3 = CrystalEmuLib
+		SccLocalPath3 = CrystalEmuLib
+		SccProjectUniqueName4 = CrystalEmuLogin\\CrystalEmuLogin.csproj
+		SccProjectName4 = CrystalEmuLogin
+		SccLocalPath4 = CrystalEmuLogin
+		SccProjectUniqueName5 = CrystalEmuMessage\\CrystalEmuMessage.csproj
+		SccProjectName5 = CrystalEmuMessage
+		SccLocalPath5 = CrystalEmuMessage
+	EndGlobalSection
+EndGlobal
