@@ -1,15 +1,15 @@
-﻿namespace CrystalEmu.Networking.Queue
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.Threading;
-    using CrystalEmuLib;
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.Extensions;
-    using CrystalEmuLib.Networking.Packets;
-    using Handlers;
-    using PlayerFunctions;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using CrystalEmu.Networking.Handlers;
+using CrystalEmu.PlayerFunctions;
+using CrystalEmuLib;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Extensions;
+using CrystalEmuLib.Networking.Packets;
 
+namespace CrystalEmu.Networking.Queue
+{
     public static class IncomingQueue
     {
         public static readonly ConcurrentQueue<PacketInfo> Packets = new ConcurrentQueue<PacketInfo>();

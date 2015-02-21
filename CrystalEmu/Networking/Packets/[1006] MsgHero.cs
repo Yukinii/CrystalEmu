@@ -1,9 +1,9 @@
-﻿namespace CrystalEmu.Networking.Packets
-{
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.Networking.Packets;
-    using PlayerFunctions;
+﻿using CrystalEmu.PlayerFunctions;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Networking.Packets;
 
+namespace CrystalEmu.Networking.Packets
+{
     internal partial class CoPacket
     {
         public static byte[] MsgHero(Player Player)

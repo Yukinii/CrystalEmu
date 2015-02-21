@@ -1,14 +1,14 @@
-﻿namespace CrystalEmuLogin.Networking.IPC_Comms
-{
-    using System;
-    using System.IO;
-    using System.ServiceModel;
-    using System.Threading.Tasks;
-    using CrystalEmuLib;
-    using CrystalEmuLib.IPC_Comms.Database;
-    using CrystalEmuLib.IPC_Comms.Shared;
-    using PlayerFunctions;
+﻿using System;
+using System.IO;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using CrystalEmuLib;
+using CrystalEmuLib.IPC_Comms.Database;
+using CrystalEmuLib.IPC_Comms.Shared;
+using CrystalEmuLogin.PlayerFunctions;
 
+namespace CrystalEmuLogin.Networking.IPC_Comms
+{
     public static class DatabaseConnection
     {
         public static bool ConnectionOpen;

@@ -1,14 +1,14 @@
-﻿namespace CrystalEmu.Networking.Handlers
-{
-    using System;
-    using System.Threading.Tasks;
-    using CrystalEmuLib;
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.Extensions;
-    using CrystalEmuLib.Sockets;
-    using Packets;
-    using PlayerFunctions;
+﻿using System;
+using System.Threading.Tasks;
+using CrystalEmu.Networking.Packets;
+using CrystalEmu.PlayerFunctions;
+using CrystalEmuLib;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Extensions;
+using CrystalEmuLib.Sockets;
 
+namespace CrystalEmu.Networking.Handlers
+{
     public static class MsgLogin
     {
         public static async Task Handle(Player Player, byte[] Packet)

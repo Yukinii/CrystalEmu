@@ -1,9 +1,9 @@
-﻿namespace CrystalEmuLib.Networking.Packets
-{
-    using System;
-    using System.IO;
-    using Enums;
+﻿using System;
+using System.IO;
+using CrystalEmuLib.Enums;
 
+namespace CrystalEmuLib.Networking.Packets
+{
     public class Packet : IDisposable
     {
         private readonly MemoryStream _Stream;

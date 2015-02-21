@@ -1,11 +1,11 @@
-﻿namespace CrystalEmu
-{
-    using System;
-    using CrystalEmuLib;
-    using Networking.IPC_Comms;
-    using Networking.Queue;
-    using Networking.Sockets;
+﻿using System;
+using CrystalEmu.Networking.IPC_Comms;
+using CrystalEmu.Networking.Queue;
+using CrystalEmu.Networking.Sockets;
+using CrystalEmuLib;
 
+namespace CrystalEmu
+{
     internal class Program
     {
         static void Main()

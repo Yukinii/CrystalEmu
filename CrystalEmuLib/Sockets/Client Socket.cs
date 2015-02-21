@@ -1,8 +1,8 @@
-﻿namespace CrystalEmuLib.Sockets
-{
-    using System;
-    using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 
+namespace CrystalEmuLib.Sockets
+{
     public abstract class ClientSocket
     {
         private byte[] _Buffer;

@@ -1,11 +1,11 @@
-﻿namespace CrystalEmuLogin
-{
-    using System;
-    using CrystalEmuLib;
-    using Networking.IPC_Comms;
-    using Networking.Queue;
-    using Networking.Sockets;
+﻿using System;
+using CrystalEmuLib;
+using CrystalEmuLogin.Networking.IPC_Comms;
+using CrystalEmuLogin.Networking.Queue;
+using CrystalEmuLogin.Networking.Sockets;
 
+namespace CrystalEmuLogin
+{
     class Program
     {
         static void Main()

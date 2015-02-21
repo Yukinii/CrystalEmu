@@ -1,15 +1,15 @@
-﻿namespace CrystalEmu.Networking.Handlers
-{
-    using System;
-    using System.Threading.Tasks;
-    using CoreSystems;
-    using CrystalEmuLib;
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.Extensions;
-    using IPC_Comms;
-    using Packets;
-    using PlayerFunctions;
+﻿using System;
+using System.Threading.Tasks;
+using CrystalEmu.CoreSystems;
+using CrystalEmu.Networking.IPC_Comms;
+using CrystalEmu.Networking.Packets;
+using CrystalEmu.PlayerFunctions;
+using CrystalEmuLib;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Extensions;
 
+namespace CrystalEmu.Networking.Handlers
+{
     public static class MsgAction
     {
         public static async Task Handle(Player Player, byte[] Packet)

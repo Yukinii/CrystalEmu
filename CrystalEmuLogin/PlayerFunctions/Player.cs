@@ -1,10 +1,10 @@
-﻿namespace CrystalEmuLogin.PlayerFunctions
-{
-    using System.Threading.Tasks;
-    using CrystalEmuLib.IPC_Comms.Shared;
-    using CrystalEmuLib.Sockets;
-    using Networking.Queue;
+﻿using System.Threading.Tasks;
+using CrystalEmuLib.IPC_Comms.Shared;
+using CrystalEmuLib.Sockets;
+using CrystalEmuLogin.Networking.Queue;
 
+namespace CrystalEmuLogin.PlayerFunctions
+{
     public class Player
     {
         public readonly YukiSocket Socket;

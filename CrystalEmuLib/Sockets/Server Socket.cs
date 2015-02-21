@@ -1,9 +1,9 @@
-﻿namespace CrystalEmuLib.Sockets
-{
-    using System;
-    using System.Net;
-    using System.Net.Sockets;
+﻿using System;
+using System.Net;
+using System.Net.Sockets;
 
+namespace CrystalEmuLib.Sockets
+{
     public abstract class ServerSocket
     {
         private int _Backlog;

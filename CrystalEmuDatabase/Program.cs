@@ -1,9 +1,9 @@
-﻿namespace CrystalEmuDatabase
-{
-    using System;
-    using System.ServiceModel;
-    using CrystalEmuLib.IPC_Comms.Database;
+﻿using System;
+using System.ServiceModel;
+using CrystalEmuLib.IPC_Comms.Database;
 
+namespace CrystalEmuDatabase
+{
     class Program
     {
         private static ServiceHost _DataExchangeHost;

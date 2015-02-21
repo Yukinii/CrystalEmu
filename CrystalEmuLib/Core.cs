@@ -1,8 +1,8 @@
-﻿namespace CrystalEmuLib
-{
-    using System;
-    using IPC_Comms.Database;
+﻿using System;
+using CrystalEmuLib.IPC_Comms.Database;
 
+namespace CrystalEmuLib
+{
     public static class Core
     {
         public static IDataExchange DbServerConnection;
@@ -12,6 +12,12 @@
         {
             Console.ForegroundColor = Color;
             Console.WriteLine(Text);
+            Console.ResetColor();
+        }
+        public static void Write(object Text, ConsoleColor Color)
+        {
+            Console.ForegroundColor = Color;
+            Console.Write(Text);
             Console.ResetColor();
         }
     }

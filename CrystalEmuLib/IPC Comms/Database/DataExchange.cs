@@ -1,13 +1,13 @@
-﻿namespace CrystalEmuLib.IPC_Comms.Database
-{
-    using System;
-    using System.Collections.Concurrent;
-    using System.IO;
-    using System.Linq;
-    using System.ServiceModel;
-    using System.Threading.Tasks;
-    using System.Timers;
+﻿using System;
+using System.Collections.Concurrent;
+using System.IO;
+using System.Linq;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using System.Timers;
 
+namespace CrystalEmuLib.IPC_Comms.Database
+{
     public enum ExchangeType
     {
         SaveAccountValue = 0,
@@ -31,8 +31,8 @@
     public class DataExchange : IDataExchange
     {
         public const string AccountDatabasePath = @"Y:\XioEmu\Database\Accounts\";
-        private readonly ConcurrentDictionary<string, IniFile> _Files = new ConcurrentDictionary<string, IniFile>(50, 100);
-        private static Timer _Timer;
+        public readonly ConcurrentDictionary<string, IniFile> Cache = new ConcurrentDictionary<string, IniFile>(50, 100);
+        public static readonly Timer AutoFlushTimer = new Timer();
         public ExchangeType EType;
         public string Path;
         public string Section;
@@ -41,21 +41,26 @@
         public string Response;
         public DataExchange()
         {
-            if (_Timer != null)
+            if (AutoFlushTimer != null)
                 return;
-
-            _Timer = new Timer();
-            _Timer.Elapsed += T_Elapsed;
-            _Timer.Interval = 1500;
-            _Timer.Start();
+            AutoFlushTimer.Elapsed += AutoFlushAutoFlushTimerElapsed;
+            AutoFlushTimer.Interval = 1500;
+            AutoFlushTimer.Start();
+        }
+        public DataExchange(ExchangeType EType, string Path, string Section)
+        {
+            this.EType = EType;
+            this.Path = Path;
+            this.Section = Section;
         }
 
-        private void T_Elapsed(object Sender, ElapsedEventArgs E)
+        private void AutoFlushAutoFlushTimerElapsed(object Sender, ElapsedEventArgs E)
         {
-            if (_Files == null) return;
-            foreach (var Kvp in _Files)
+            if (Cache == null)
+                return;
+            foreach (var Kvp in Cache)
             {
-                Kvp.Value?.Flush();
+                Kvp.Value.Flush();
             }
         }
 
@@ -71,19 +76,13 @@
                 {
                     if (!File.Exists(AccountDatabasePath + De.Path))
                         return "fail";
-                    IniFile Writer;
-                    if (_Files != null && _Files.ContainsKey(AccountDatabasePath + De.Path))
-                        Writer = _Files[AccountDatabasePath + De.Path];
-                    else
-                    {
-                        Console.WriteLine("New File Handle: " + De.Path);
-                        Writer = new IniFile(AccountDatabasePath + De.Path);
-                        _Files?.TryAdd(AccountDatabasePath + De.Path, Writer);
-                    }
-                    Writer?.Write(De.Section, "X", De.Key);
-                    Writer?.Write(De.Section, "Y", De.Value);
+
+                    var Writer = CacheLookup(De);
+                    Writer.Write(De.Section, "X", De.Key);
+                    Writer.Write(De.Section, "Y", De.Value);
                     Console.WriteLine("X -> " + De.Key + " on " + De.Path);
                     Console.WriteLine("Y -> " + De.Value + " on " + De.Path);
+
                     return "done";
                 }
                 case ExchangeType.LoadAccountValue:
@@ -91,35 +90,22 @@
                     if (!File.Exists(AccountDatabasePath + De.Path))
                         return "";
 
-                    IniFile Reader;
-                    if (_Files != null && _Files.ContainsKey(AccountDatabasePath + De.Path))
-                        Reader = _Files[AccountDatabasePath + De.Path];
-                    else
-                    {
-                        Console.WriteLine("New File Handle: " + De.Path);
-                        Reader = new IniFile(AccountDatabasePath + De.Path);
-                        _Files?.TryAdd(AccountDatabasePath + De.Path, Reader);
-                    }
-                    De.Response = Reader?.ReadString(De.Section, De.Key, "");
+                    var Reader = CacheLookup(De);
+                    De.Response = Reader.ReadString(De.Section, De.Key, "");
                     De.EType = ExchangeType.Response;
                     Console.WriteLine(De.Key + " -> " + De.Response + " on " + De.Path);
+
                     return De.Response;
                 }
                 case ExchangeType.SaveAccountValue:
                 {
                     if (!File.Exists(AccountDatabasePath + De.Path))
                         File.Create(AccountDatabasePath + De.Path).Close();
-                    IniFile Writer;
-                    if (_Files != null && _Files.ContainsKey(AccountDatabasePath + De.Path))
-                        Writer = _Files[AccountDatabasePath + De.Path];
-                    else
-                    {
-                        Console.WriteLine("New File Handle: " + De.Path);
-                        Writer = new IniFile(AccountDatabasePath + De.Path);
-                        _Files?.TryAdd(AccountDatabasePath + De.Path, Writer);
-                    }
-                    Writer?.Write(De.Section, De.Key, De.Value);
+
+                    var Writer = CacheLookup(De);
+                    Writer.Write(De.Section, De.Key, De.Value);
                     Console.WriteLine(De.Key + " -> " + De.Value + " on " + De.Path);
+
                     return "done";
                 }
                 case ExchangeType.GetUsernameByUID:
@@ -132,18 +118,25 @@
                     return "0";
                 }
             }
-            return "INVALID::ETYPE";
+            return @"INVALID::ETYPE";
         });
 
-        public DataExchange(ExchangeType EType, string Path, string Section)
+        private IniFile CacheLookup(DataExchange De)
         {
-            this.EType = EType;
-            this.Path = Path;
-            this.Section = Section;
+            IniFile Writer;
+            if (Cache.ContainsKey(AccountDatabasePath + De.Path))
+            {
+                Core.WriteLine("Cached File Handle: " + De.Path, ConsoleColor.Green);
+                Writer = Cache[AccountDatabasePath + De.Path];
+            }
+            else
+            {
+                Core.WriteLine("New File Handle: " + De.Path, ConsoleColor.Cyan);
+                Writer = new IniFile(AccountDatabasePath + De.Path);
+                Cache.TryAdd(AccountDatabasePath + De.Path, Writer);
+            }
+            return Writer;
         }
-
-
-
         public DataExchange Clone()
         {
             var Copy = new DataExchange

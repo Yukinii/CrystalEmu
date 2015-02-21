@@ -1,10 +1,10 @@
-﻿namespace CrystalEmuLib.Extensions
-{
-    using System;
-    using System.Linq;
-    using System.Text;
-    using Enums;
+﻿using System;
+using System.Linq;
+using System.Text;
+using CrystalEmuLib.Enums;
 
+namespace CrystalEmuLib.Extensions
+{
     public static class ByteExtensions
     {
         public static ushort Size(this byte[] Packet) => Packet != null && Packet.Length > 2 ? BitConverter.ToUInt16(Packet, 0) : (ushort)0;

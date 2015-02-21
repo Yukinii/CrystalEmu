@@ -1,70 +1,49 @@
-﻿namespace CrystalEmuLib.IPC_Comms.Database
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using CrystalEmuLib.Extensions;
 
+namespace CrystalEmuLib.IPC_Comms.Database
+{
     public class IniFile
     {
 
         #region "Declarations"
+        private string _FileName;
+        private bool _CacheModified;
 
-        // *** Lock for thread-safe access to file and local cache ***
-        private readonly object _MLock = new object();
-
-        // *** File name ***
-        private string _MFileName;
-
-        // *** Lazy loading flag ***
-        private bool _MLazy;
-
-        // *** Automatic flushing flag ***
-        private bool _MAutoFlush;
-
-        // *** Local cache ***
-        private readonly Dictionary<string, Dictionary<string, string>> _MSections = new Dictionary<string, Dictionary<string, string>>();
-        private readonly Dictionary<string, Dictionary<string, string>> _MModified = new Dictionary<string, Dictionary<string, string>>();
-
-        // *** Local cache modified flag ***
-        private bool _MCacheModified;
-
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Sections = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
+        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Modified = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
         #endregion
 
         #region "Methods"
-
-        // *** Constructor ***
+        
         public IniFile(string FileName)
         {
-            Initialize(FileName, false);
+            Initialize(FileName);
         }
-
-        // *** Initialization ***
-        private void Initialize(string FileName, bool Lazy)
+        
+        private void Initialize(string FileName)
         {
-            _MFileName = FileName;
-            _MLazy = Lazy;
-            _MAutoFlush = true;
-            if (!_MLazy) Refresh();
+            _FileName = FileName;
+            Refresh();
         }
-
-        // *** Parse section name ***
+        
         private static string ParseSectionName(string Line)
         {
             if (!Line.StartsWith("[", StringComparison.Ordinal)) return null;
             if (!Line.EndsWith("]", StringComparison.Ordinal)) return null;
             return Line.Length < 3 ? null : Line.Substring(1, Line.Length - 2);
         }
-
-        // *** Parse key+value pair ***
+        
         private static bool ParseKeyValuePair(string Line, ref string Key, ref string Value)
         {
-            // *** Check for key+value pair ***
-            var I = 0;
-            if (Line != null && (I = Line.IndexOf('=')) <= 0) return false;
+            int I;
+            if ((I = Line.IndexOf('=')) <= 0) return false;
 
-            if (Line == null) return true;
             var J = Line.Length - I - 1;
             Key = Line.Substring(0, I).Trim();
             if (Key.Length <= 0) return false;
@@ -73,89 +52,70 @@
             return true;
         }
 
-        // *** Read file contents into local cache ***
         private void Refresh()
         {
-            lock (_MLock)
+            StreamReader Sr = null;
+            try
             {
-                StreamReader Sr = null;
+                _Sections.Clear();
+                _Modified.Clear();
                 try
                 {
-                    // *** Clear local cache ***
-                    _MSections.Clear();
-                    _MModified.Clear();
-
-                    // *** Open the INI file ***
-                    try
-                    {
-                        Sr = !File.Exists(_MFileName) ? new StreamReader(File.Create(_MFileName)) : new StreamReader(_MFileName);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-
-                    // *** Read up the file content ***
-                    Dictionary<string, string> CurrentSection = null;
-                    string S;
-                    string Key = null;
-                    string Value = null;
-                    while ((S = Sr.ReadLine()) != null)
-                    {
-                        S = S.Trim();
-
-                        // *** Check for section names ***
-                        var SectionName = ParseSectionName(S);
-                        if (SectionName != null)
-                        {
-                            // *** Only first occurrence of a section is loaded ***
-                            if (_MSections.ContainsKey(SectionName))
-                            {
-                                CurrentSection = null;
-                            }
-                            else
-                            {
-                                CurrentSection = new Dictionary<string, string>();
-                                _MSections.Add(SectionName, CurrentSection);
-                            }
-                        }
-                        else if (CurrentSection != null)
-                        {
-                            // *** Check for key+value pair ***
-                            if (!ParseKeyValuePair(S, ref Key, ref Value)) continue;
-                            // *** Only first occurrence of a key is loaded ***
-                            if (!CurrentSection.ContainsKey(Key))
-                            {
-                                CurrentSection.Add(Key, Value);
-                            }
-                        }
-                    }
+                    Sr = !File.Exists(_FileName) ? new StreamReader(File.Create(_FileName)) : new StreamReader(_FileName);
                 }
-                finally
+                catch
                 {
-                    // *** Cleanup: close file ***
-                    Sr?.Close();
+                    return;
+                }
+
+                ConcurrentDictionary<string, string> CurrentSection = null;
+                string S;
+                string Key = null;
+                string Value = null;
+                while ((S = Sr.ReadLine()) != null)
+                {
+                    S = S.Trim();
+                    var SectionName = ParseSectionName(S);
+                    if (SectionName != null)
+                    {
+                        if (_Sections.ContainsKey(SectionName))
+                        {
+                            CurrentSection = null;
+                        }
+                        else
+                        {
+                            CurrentSection = new ConcurrentDictionary<string, string>();
+                            _Sections.TryAdd(SectionName, CurrentSection);
+                        }
+                    }
+                    else if (CurrentSection != null)
+                    {
+                        if (!ParseKeyValuePair(S, ref Key, ref Value)) continue;
+
+                        if (!CurrentSection.ContainsKey(Key))
+                        {
+                            CurrentSection.TryAdd(Key, Value);
+                        }
+                    }
                 }
             }
-        }
-
-        // *** Flush local cache content ***
-        public void Flush()
-        {
-            lock (_MLock)
+            finally
             {
-                PerformFlush();
+                Sr?.Close();
             }
         }
 
-        public void PerformFlush()
+        public void Flush() => PerformFlush();
+
+        private async void PerformFlush()
         {
             try
             {
-                if (!_MCacheModified) return;
-                _MCacheModified = false;
-                var OriginalFileExists = File.Exists(_MFileName);
-                var TmpFileName = Path.ChangeExtension(_MFileName, "$n$");
+                if (!_CacheModified)
+                    return;
+                _CacheModified = false;
+                var OriginalFileExists = File.Exists(_FileName);
+                var TmpFileName = Path.ChangeExtension(_FileName, "$n$");
                 if (!Directory.Exists(Path.GetDirectoryName(TmpFileName)))
                     Directory.CreateDirectory(Path.GetDirectoryName(TmpFileName));
                 while (File.Exists(TmpFileName))
@@ -173,13 +133,13 @@
 
                 try
                 {
-                    Dictionary<string, string> CurrentSection = null;
+                    ConcurrentDictionary<string, string> CurrentSection = null;
                     if (OriginalFileExists)
                     {
                         StreamReader Sr = null;
                         try
                         {
-                            Sr = new StreamReader(_MFileName);
+                            Sr = new StreamReader(_FileName);
                             string Key = null;
                             string Value = null;
                             var Reading = true;
@@ -200,7 +160,7 @@
                                     Unmodified = false;
                                     SectionName = null;
                                 }
-                                
+
                                 if ((SectionName != null) || (!Reading))
                                 {
                                     if (CurrentSection?.Count > 0)
@@ -217,7 +177,7 @@
 
                                     if (Reading)
                                     {
-                                        if (!_MModified.TryGetValue(SectionName, out CurrentSection))
+                                        if (!_Modified.TryGetValue(SectionName, out CurrentSection))
                                         {
                                         }
                                     }
@@ -229,7 +189,10 @@
                                         if (CurrentSection.TryGetValue(Key, out Value))
                                         {
                                             Unmodified = false;
-                                            CurrentSection.Remove(Key);
+                                            while (!CurrentSection.TryRemove(Key))
+                                            {
+                                                await Task.Delay(10);
+                                            }
 
                                             Sw.Write(Key);
                                             Sw.Write('=');
@@ -237,23 +200,23 @@
                                         }
                                     }
                                 }
-                                
+
                                 if (Unmodified)
                                 {
                                     Sw.WriteLine(S);
                                 }
                             }
-                            
+
                             Sr.Close();
                             Sr = null;
                         }
                         finally
-                        {             
+                        {
                             Sr.Close();
                         }
                     }
-                    
-                    foreach (var SectionPair in _MModified)
+
+                    foreach (var SectionPair in _Modified)
                     {
                         CurrentSection = SectionPair.Value;
                         if (CurrentSection.Count <= 0)
@@ -269,15 +232,15 @@
                         }
                         CurrentSection.Clear();
                     }
-                    _MModified.Clear();
-                    
+                    _Modified.Clear();
+
                     Sw.Close();
                     Sw = null;
-                    File.Copy(TmpFileName, _MFileName, true);
+                    File.Copy(TmpFileName, _FileName, true);
                     File.Delete(TmpFileName);
                 }
                 finally
-                {              
+                {
                     Sw.Close();
                 }
             }
@@ -291,99 +254,56 @@
         // *** Read a value from local cache ***
         public string ReadString(string SectionName, string Key, string DefaultValue)
         {
-            // *** Lazy loading ***
-            if (_MLazy)
-            {
-                _MLazy = false;
-                Refresh();
-            }
-
-            lock (_MLock)
-            {
-                // *** Check if the section exists ***
-                Dictionary<string, string> Section;
-                if (!_MSections.TryGetValue(SectionName, out Section)) return DefaultValue;
-
-                // *** Check if the key exists ***
-                string Value;
-                return !Section.TryGetValue(Key, out Value) ? DefaultValue : Value;
-
-                // *** Return the found value ***
-            }
+            ConcurrentDictionary<string, string> Section;
+            if (!_Sections.TryGetValue(SectionName, out Section)) return DefaultValue;
+            string Value;
+            return !Section.TryGetValue(Key, out Value) ? DefaultValue : Value;
         }
+
         public string ReadString(string SectionName, string Key)
         {
             Refresh();
-            // *** Lazy loading ***
-            if (_MLazy)
-            {
-                _MLazy = false;
-                Refresh();
-            }
 
-            lock (_MLock)
-            {
-                // *** Check if the section exists ***
-                Dictionary<string, string> Section;
-                if (!_MSections.TryGetValue(SectionName, out Section)) return "";
-
-                // *** Check if the key exists ***
-                string Value;
-                return !Section.TryGetValue(Key, out Value) ? "nil" : Value;
-
-                // *** Return the found value ***
-            }
+            // *** Check if the section exists ***
+            ConcurrentDictionary<string, string> Section;
+            if (!_Sections.TryGetValue(SectionName, out Section)) return "";
+            
+            string Value;
+            return !Section.TryGetValue(Key, out Value) ? "nil" : Value;
         }
 
-        // *** Insert or modify a value in local cache ***
-        public void Write(string SectionName, string Key, object Value)
+        public async void Write(string SectionName, string Key, object Value)
         {
-            // *** Lazy loading ***
-            if (_MLazy)
+            _CacheModified = true;
+
+            ConcurrentDictionary<string, string> Section;
+            if (!_Sections.TryGetValue(SectionName, out Section))
             {
-                _MLazy = false;
-                Refresh();
+                Section = new ConcurrentDictionary<string, string>();
+                _Sections.TryAdd(SectionName, Section);
             }
 
-            lock (_MLock)
+            if (Section.ContainsKey(Key))
+                while (!Section.TryRemove(Key))
+                {
+                    await Task.Delay(10);
+                }
+            Section.TryAdd(Key, Convert.ToString(Value));
+
+            if (!_Modified.TryGetValue(SectionName, out Section))
             {
-                // *** Flag local cache modification ***
-                _MCacheModified = true;
-
-                // *** Check if the section exists ***
-                Dictionary<string, string> Section = null;
-                if (_MSections != null && !_MSections.TryGetValue(SectionName, out Section))
-                {
-                    // *** If it doesn't, add it ***
-                    Section = new Dictionary<string, string>();
-                    _MSections.Add(SectionName, Section);
-                }
-
-                // *** Modify the value ***
-                if (Section != null && Section.ContainsKey(Key)) Section.Remove(Key);
-                Section.Add(Key, Convert.ToString(Value));
-
-                // *** Add the modified value to local modified values cache ***
-                if (_MModified != null && !_MModified.TryGetValue(SectionName, out Section))
-                {
-                    Section = new Dictionary<string, string>();
-                    _MModified.Add(SectionName, Section);
-                }
-
-                if (Section != null && Section.ContainsKey(Key)) Section.Remove(Key);
-                Section.Add(Key, Convert.ToString(Value));
-
-                // *** Automatic flushing : immediately write any modification to the file ***
-                if (_MAutoFlush)
-                    PerformFlush();
+                Section = new ConcurrentDictionary<string, string>();
+                _Modified.TryAdd(SectionName, Section);
             }
+
+            if (Section.ContainsKey(Key))
+                while (!Section.TryRemove(Key))
+                {
+                    await Task.Delay(10);
+                }
+            Section.TryAdd(Key, Convert.ToString(Value));
         }
-
-        // *** Encode byte array ***
-
-        // *** Decode byte array ***
-
-        // *** Getters for various types ***
+        
         public bool GetValue(string SectionName, string Key, bool DefaultValue)
         {
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));

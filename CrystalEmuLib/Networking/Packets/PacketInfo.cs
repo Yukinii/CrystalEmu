@@ -1,7 +1,7 @@
-﻿namespace CrystalEmuLib.Networking.Packets
-{
-    using System;
+﻿using System;
 
+namespace CrystalEmuLib.Networking.Packets
+{
     public class PacketInfo
     {
         public Object Owner;

@@ -1,11 +1,11 @@
-﻿namespace CrystalEmuLogin.Networking.Packets
-{
-    using System;
-    using CrystalEmuLib;
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.Networking.Packets;
-    using PlayerFunctions;
+﻿using System;
+using CrystalEmuLib;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Networking.Packets;
+using CrystalEmuLogin.PlayerFunctions;
 
+namespace CrystalEmuLogin.Networking.Packets
+{
     internal class CoPacket
     {
         public static byte[] MsgTransfer(Player Player)

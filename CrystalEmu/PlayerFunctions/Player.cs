@@ -1,14 +1,14 @@
-﻿namespace CrystalEmu.PlayerFunctions
-{
-    using System.Threading.Tasks;
-    using CrystalEmuLib;
-    using CrystalEmuLib.Enums;
-    using CrystalEmuLib.IPC_Comms.Database;
-    using CrystalEmuLib.IPC_Comms.Shared;
-    using CrystalEmuLib.Sockets;
-    using Networking.Packets;
-    using Networking.Queue;
+﻿using System.Threading.Tasks;
+using CrystalEmu.Networking.Packets;
+using CrystalEmu.Networking.Queue;
+using CrystalEmuLib;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.IPC_Comms.Database;
+using CrystalEmuLib.IPC_Comms.Shared;
+using CrystalEmuLib.Sockets;
 
+namespace CrystalEmu.PlayerFunctions
+{
     public class Player
     {
         #region private
