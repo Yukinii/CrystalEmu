@@ -28,7 +28,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 Core.WriteLine(" [Success]", ConsoleColor.Green);
                 return true;
             }
-            catch (Exception Ex)
+            catch 
             {
                 Core.WriteLine(" [Failed]", ConsoleColor.Red);
                 return false;
@@ -133,7 +133,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 await Core.DbServerConnection.Execute(Ping);
                 return true;
             }
-            catch (Exception Ex)
+            catch
             {
                 await Open();
                 return await Core.DbServerConnection.Execute(Ping) != "";

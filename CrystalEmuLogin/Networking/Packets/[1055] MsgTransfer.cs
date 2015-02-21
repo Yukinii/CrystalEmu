@@ -6,7 +6,7 @@ using CrystalEmuLogin.PlayerFunctions;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
-    internal partial class CoPacket
+    public partial class CoPacket
     {
         public static byte[] MsgTransfer(Player Player)
         {

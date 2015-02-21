@@ -3,7 +3,7 @@ using CrystalEmuLib.Networking.Packets;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
-    internal partial class CoPacket
+    public partial class CoPacket
     {
         public static byte[] MsgText(uint UID, string From = "", string To = "", string Msg = "", MsgTextType MsgTextType = MsgTextType.Talk)
         {

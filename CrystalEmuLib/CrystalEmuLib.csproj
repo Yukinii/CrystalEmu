@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core.cs" />
+    <Compile Include="Enums\MsgItemPosition.cs" />
     <Compile Include="Enums\MsgTextType.cs" />
     <Compile Include="Enums\MsgActionType.cs" />
     <Compile Include="Enums\MsgItemType.cs" />

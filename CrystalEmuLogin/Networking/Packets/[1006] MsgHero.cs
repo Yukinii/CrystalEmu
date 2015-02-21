@@ -4,7 +4,7 @@ using CrystalEmuLogin.PlayerFunctions;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
-    internal partial class CoPacket
+    public partial class CoPacket
     {
         public static byte[] MsgHero(Player Player)
         {

@@ -92,7 +92,7 @@ namespace CrystalEmu.Networking.IPC_Comms
                 await Core.DbServerConnection.Execute(Ping);
                 return true;
             }
-            catch (Exception Ex)
+            catch
             {
                 await Open();
                 return await Core.DbServerConnection.Execute(Ping) != "";

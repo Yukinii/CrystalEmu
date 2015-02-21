@@ -1,8 +1,10 @@
-﻿using CrystalEmuLib;
+﻿using System.Collections.Generic;
+using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
 using CrystalEmuLib.IPC_Comms.Shared;
 using CrystalEmuLib.Sockets;
+using CrystalEmuLogin.Items;
 using CrystalEmuLogin.Networking.Packets;
 using CrystalEmuLogin.Networking.Queue;
 
@@ -36,17 +38,19 @@ namespace CrystalEmuLogin.PlayerFunctions
         private int _Z;
         private uint _MaximumHP;
         private uint _MaximumMP;
-
+        private byte _Action;
         #endregion
         public readonly YukiSocket Socket;
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
+        public readonly Dictionary<MsgItemPosition, Item> Equipment; 
         public uint UID;
         public string Username;
         public string Password;
         public uint LastJump;
         public int LastWalk;
+        public ulong StatusEffects;
 
         public string Name
         {
@@ -57,7 +61,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Name", value);
             }
         }
-
         public string Spouse
         {
             get { return _Spouse; }
@@ -67,7 +70,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Spouse", value);
             }
         }
-
         public byte Stamina
         {
             get { return _Stamina; }
@@ -78,7 +80,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Stamina", value);
             }
         }
-
         public byte XpTimer
         {
             get { return _XpTimer; }
@@ -89,7 +90,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "XpTimer", value);
             }
         }
-
         public byte Level
         {
             get { return _Level; }
@@ -100,7 +100,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Level", value);
             }
         }
-
         public byte Class
         {
             get { return _Class; }
@@ -111,7 +110,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Class", value);
             }
         }
-
         public byte Direction
         {
             get { return _Direction; }
@@ -121,7 +119,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Direction", value);
             }
         }
-
         public ushort PkPoints
         {
             get { return _PkPoints; }
@@ -132,7 +129,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.PKPoints));
             }
         }
-
         public uint Model
         {
             get { return _Model; }
@@ -143,7 +139,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Model));
             }
         }
-
         public ushort Hair
         {
             get { return _Hair; }
@@ -154,7 +149,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.HairStyle));
             }
         }
-
         public uint Money
         {
             get { return _Money; }
@@ -165,7 +159,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.InvMoney));
             }
         }
-
         public uint Cps
         {
             get { return _Cps; }
@@ -176,7 +169,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.InvCPoints));
             }
         }
-
         public uint Exp
         {
             get { return _Exp; }
@@ -187,7 +179,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Exp));
             }
         }
-
         public ushort Strength
         {
             get { return _Strength; }
@@ -198,7 +189,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Strength", value);
             }
         }
-
         public ushort Agility
         {
             get { return _Agility; }
@@ -209,7 +199,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Agility", value);
             }
         }
-
         public ushort Vitality
         {
             get { return _Vitality; }
@@ -220,7 +209,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Vitality", value);
             }
         }
-
         public ushort Spirit
         {
             get { return _Spirit; }
@@ -231,7 +219,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Spirit", value);
             }
         }
-
         public ushort AttributePoints
         {
             get { return _AttributePoints; }
@@ -242,7 +229,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "AttributePoints", value);
             }
         }
-
         public uint MaximumHP
         {
             get { return _MaximumHP; }
@@ -253,7 +239,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "MaximumHP", value);
             }
         }
-
         public uint MaximumMP
         {
             get { return _MaximumMP; }
@@ -264,7 +249,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "MaximumMP", value);
             }
         }
-
         public uint CurrentHP
         {
             get { return _CurrentHP; }
@@ -275,7 +259,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "CurrentHP", value);
             }
         }
-
         public uint CurrentMP
         {
             get { return _CurrentMP; }
@@ -286,7 +269,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "CurrentMP", value);
             }
         }
-
         public int X
         {
             get { return _X; }
@@ -296,7 +278,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "X", value);
             }
         }
-
         public int Y
         {
             get { return _Y; }
@@ -306,7 +287,6 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Y", value);
             }
         }
-
         public int Z
         {
             get { return _Z; }
@@ -316,10 +296,17 @@ namespace CrystalEmuLogin.PlayerFunctions
                 IPC.Set(SaveExchange, "Z", value);
             }
         }
+        public byte Action
+        {
+            get { return _Action; }
+            set { _Action = value; }
+        }
+
         public Player(YukiSocket YukiSocket)
         {
             ServerInfo = new ServerInfo { IP = "192.168.0.2", Port = 5816 };
             Socket = YukiSocket;
+            Equipment = new Dictionary<MsgItemPosition, Item>(9);
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);

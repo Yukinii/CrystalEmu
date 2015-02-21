@@ -4,7 +4,7 @@ using CrystalEmuLib.Networking.Packets;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
-    internal partial class CoPacket
+    public partial class CoPacket
     {
         public static byte[] GeneralData(uint UID, uint Value1, ushort Value2, ushort Value3, MsgActionType Type)
         {

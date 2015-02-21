@@ -14,7 +14,7 @@ namespace CrystalEmu.Networking.Queue
         public static readonly Thread ConsumerThread = new Thread(Loop);
         public static readonly AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-        private static async void Loop()
+        private static void Loop()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
             while (true)

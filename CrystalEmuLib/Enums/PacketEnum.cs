@@ -8,9 +8,11 @@
         MsgItem = 1009,
         MsgAction = 1010,
 
+        MsgSpwan = 1014,
         MsgUpdate = 1017,
         MsgConnect = 1051,
         MsgLogin = 1052,
-        MsgTransfer = 1055
+        MsgTransfer = 1055,
+        MsgNpc = 1109,
     }
 }
