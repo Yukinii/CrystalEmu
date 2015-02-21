@@ -1,13 +1,13 @@
-﻿using System;
-using System.ServiceModel;
-using System.Threading.Tasks;
-using CrystalEmu.PlayerFunctions;
-using CrystalEmuLib;
-using CrystalEmuLib.IPC_Comms.Database;
-using CrystalEmuLib.IPC_Comms.Shared;
-
-namespace CrystalEmu.Networking.IPC_Comms
+﻿namespace CrystalEmu.Networking.IPC_Comms
 {
+    using System;
+    using System.ServiceModel;
+    using System.Threading.Tasks;
+    using CrystalEmuLib;
+    using CrystalEmuLib.IPC_Comms.Database;
+    using CrystalEmuLib.IPC_Comms.Shared;
+    using PlayerFunctions;
+
     public static class DatabaseConnection
     {
         public static async Task<bool> Open()

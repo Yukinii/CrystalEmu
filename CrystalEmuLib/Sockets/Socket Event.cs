@@ -4,9 +4,6 @@
 
     public class YukiServer : ServerSocket
     {
-        protected override IPacketAuthCipher MakeCrypto()
-        {
-            return new ConquerStanderedCipher();
-        }
+        protected override IPacketAuthCipher MakeCrypto() => new ConquerStanderedCipher();
     }
 }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-
-namespace CrystalEmuLib.IPC_Comms.Database
+﻿namespace CrystalEmuLib.IPC_Comms.Database
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
 
     public class IniFile
     {
@@ -52,8 +52,8 @@ namespace CrystalEmuLib.IPC_Comms.Database
         // *** Parse section name ***
         private static string ParseSectionName(string Line)
         {
-            if (!Line.StartsWith("[")) return null;
-            if (!Line.EndsWith("]")) return null;
+            if (!Line.StartsWith("[", StringComparison.Ordinal)) return null;
+            if (!Line.EndsWith("]", StringComparison.Ordinal)) return null;
             return Line.Length < 3 ? null : Line.Substring(1, Line.Length - 2);
         }
 
@@ -61,9 +61,10 @@ namespace CrystalEmuLib.IPC_Comms.Database
         private static bool ParseKeyValuePair(string Line, ref string Key, ref string Value)
         {
             // *** Check for key+value pair ***
-            int I;
-            if ((I = Line.IndexOf('=')) <= 0) return false;
+            var I = 0;
+            if (Line != null && (I = Line.IndexOf('=')) <= 0) return false;
 
+            if (Line == null) return true;
             var J = Line.Length - I - 1;
             Key = Line.Substring(0, I).Trim();
             if (Key.Length <= 0) return false;
@@ -147,7 +148,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
             }
         }
 
-        private void PerformFlush()
+        public void PerformFlush()
         {
             try
             {
@@ -205,14 +206,11 @@ namespace CrystalEmuLib.IPC_Comms.Database
                                     if (CurrentSection?.Count > 0)
                                     {
                                         var Section = CurrentSection;
-                                        foreach (var Fkey in CurrentSection.Keys)
+                                        foreach (var Fkey in CurrentSection.Keys.Where(Fkey => Section.TryGetValue(Fkey, out Value)))
                                         {
-                                            if (Section.TryGetValue(Fkey, out Value))
-                                            {
-                                                Sw.Write(Fkey);
-                                                Sw.Write('=');
-                                                Sw.WriteLine(Value);
-                                            }
+                                            Sw.Write(Fkey);
+                                            Sw.Write('=');
+                                            Sw.WriteLine(Value);
                                         }
                                         CurrentSection.Clear();
                                     }
@@ -251,7 +249,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                         }
                         finally
                         {             
-                            Sr?.Close();
+                            Sr.Close();
                         }
                     }
                     
@@ -280,7 +278,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                 }
                 finally
                 {              
-                    Sw?.Close();
+                    Sw.Close();
                 }
             }
             catch (Exception E)
@@ -353,8 +351,8 @@ namespace CrystalEmuLib.IPC_Comms.Database
                 _MCacheModified = true;
 
                 // *** Check if the section exists ***
-                Dictionary<string, string> Section;
-                if (!_MSections.TryGetValue(SectionName, out Section))
+                Dictionary<string, string> Section = null;
+                if (_MSections != null && !_MSections.TryGetValue(SectionName, out Section))
                 {
                     // *** If it doesn't, add it ***
                     Section = new Dictionary<string, string>();
@@ -362,17 +360,17 @@ namespace CrystalEmuLib.IPC_Comms.Database
                 }
 
                 // *** Modify the value ***
-                if (Section.ContainsKey(Key)) Section.Remove(Key);
+                if (Section != null && Section.ContainsKey(Key)) Section.Remove(Key);
                 Section.Add(Key, Convert.ToString(Value));
 
                 // *** Add the modified value to local modified values cache ***
-                if (!_MModified.TryGetValue(SectionName, out Section))
+                if (_MModified != null && !_MModified.TryGetValue(SectionName, out Section))
                 {
                     Section = new Dictionary<string, string>();
                     _MModified.Add(SectionName, Section);
                 }
 
-                if (Section.ContainsKey(Key)) Section.Remove(Key);
+                if (Section != null && Section.ContainsKey(Key)) Section.Remove(Key);
                 Section.Add(Key, Convert.ToString(Value));
 
                 // *** Automatic flushing : immediately write any modification to the file ***
@@ -421,20 +419,11 @@ namespace CrystalEmuLib.IPC_Comms.Database
         }
 
         // *** Setters for various types ***
-        public void SetValue(string SectionName, string Key, bool Value)
-        {
-            Write(SectionName, Key, (Value) ? ("1") : ("0"));
-        }
+        public void SetValue(string SectionName, string Key, bool Value) => Write(SectionName, Key, (Value) ? ("1") : ("0"));
 
-        public void SetValue(string SectionName, string Key, int Value)
-        {
-            Write(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
-        }
+        public void SetValue(string SectionName, string Key, int Value) => Write(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
 
-        public void SetValue(string SectionName, string Key, DateTime Value)
-        {
-            Write(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
-        }
+        public void SetValue(string SectionName, string Key, DateTime Value) => Write(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
 
         #endregion
 

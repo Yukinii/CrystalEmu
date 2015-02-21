@@ -1,14 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using CrystalEmuLib;
-using CrystalEmuLib.Extensions;
-using CrystalEmuLib.Sockets;
-using CrystalEmuLogin.Networking.IPC_Comms;
-using CrystalEmuLogin.Networking.Packets;
-using CrystalEmuLogin.PlayerFunctions;
-
-namespace CrystalEmuLogin.Networking.Handlers
+﻿namespace CrystalEmuLogin.Networking.Handlers
 {
+    using System;
+    using System.Threading.Tasks;
+    using CrystalEmuLib;
+    using CrystalEmuLib.Extensions;
+    using CrystalEmuLib.Sockets;
+    using IPC_Comms;
+    using Packets;
+    using PlayerFunctions;
+
     public static class MsgConnect
     {
         public static async Task Handle(Player Player, byte[] Packet)

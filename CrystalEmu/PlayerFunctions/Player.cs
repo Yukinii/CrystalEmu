@@ -1,14 +1,14 @@
-﻿using System.Threading.Tasks;
-using CrystalEmu.Networking.Packets;
-using CrystalEmu.Networking.Queue;
-using CrystalEmuLib;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.IPC_Comms.Database;
-using CrystalEmuLib.IPC_Comms.Shared;
-using CrystalEmuLib.Sockets;
-
-namespace CrystalEmu.PlayerFunctions
+﻿namespace CrystalEmu.PlayerFunctions
 {
+    using System.Threading.Tasks;
+    using CrystalEmuLib;
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.IPC_Comms.Database;
+    using CrystalEmuLib.IPC_Comms.Shared;
+    using CrystalEmuLib.Sockets;
+    using Networking.Packets;
+    using Networking.Queue;
+
     public class Player
     {
         #region private
@@ -39,7 +39,7 @@ namespace CrystalEmu.PlayerFunctions
         private uint _MaximumMP;
         #endregion
         public readonly YukiSocket Socket;
-        public ServerInfo ServerInfo;
+        public readonly ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
         public uint UID;
@@ -282,18 +282,9 @@ namespace CrystalEmu.PlayerFunctions
 
 
 
-        public void Send(byte[] Packet)
-        {
-            OutgoingQueue.Add(this, Packet);
-        }
-        public async Task ForceSend(byte[] Packet)
-        {
-            await Socket.Send(Packet);
-        }
+        public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
+        public async Task ForceSend(byte[] Packet) => await Socket.Send(Packet);
 
-        public void Disconnect()
-        {
-            Socket.Disconnect();
-        }
+        public void Disconnect() => Socket.Disconnect();
     }
 }

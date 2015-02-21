@@ -1,16 +1,18 @@
-﻿using System;
-using CrystalEmuLib;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.Networking.Packets;
-using CrystalEmuLogin.PlayerFunctions;
-
-namespace CrystalEmuLogin.Networking.Packets
+﻿namespace CrystalEmuLogin.Networking.Packets
 {
-    public class CoPacket
+    using System;
+    using CrystalEmuLib;
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.Networking.Packets;
+    using PlayerFunctions;
+
+    internal class CoPacket
     {
         public static byte[] MsgTransfer(Player Player)
         {
-            Console.WriteLine("{0} -> transfer to -> {1}:{2}", Player.Username, Player.ServerInfo.IP, Player.ServerInfo.Port);
+            if (Player?.ServerInfo == null)
+                return null;
+            Console.WriteLine("{0} -> transfer to -> {1}:{2}", Player.Username, Player.ServerInfo?.IP, Player.ServerInfo.Port);
             using (var P = new Packet(PacketID.MsgTransfer, 32))
             {
                 P.Write(Player.UID);

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net.Sockets;
-
-namespace CrystalEmuLib.Sockets
+﻿namespace CrystalEmuLib.Sockets
 {
-    public abstract class ClientSocket :IDisposable
+    using System;
+    using System.Net.Sockets;
+
+    public abstract class ClientSocket
     {
         private byte[] _Buffer;
         private Socket _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -66,37 +66,33 @@ namespace CrystalEmuLib.Sockets
 
         public void Disable()
         {
-            if (_Enabled)
-            {
-                _Connection.Shutdown(SocketShutdown.Both);
-                _Enabled = false;
-                OnDisconnect?.Invoke(this, null);
-                _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            }
+            if (!_Enabled) return;
+            _Connection.Shutdown(SocketShutdown.Both);
+            _Enabled = false;
+            OnDisconnect?.Invoke(this, null);
+            _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
 
         public void Enable()
         {
-            if (!_Enabled)
+            if (_Enabled) return;
+            try
             {
-                try
+                OnConnecting?.Invoke(this, null);
+                _Connection.Connect(_Remoteip, _Remoteport);
+                if (_Connection.Connected)
                 {
-                    OnConnecting?.Invoke(this, null);
-                    _Connection.Connect(_Remoteip, _Remoteport);
-                    if (_Connection.Connected)
-                    {
-                        OnConnect?.Invoke(this, null);
-                    }
-                    _Connection.BeginReceive(_Buffer, 0, _Buffer.Length, SocketFlags.None, AsyncReceive, null);
-                    _Enabled = true;
+                    OnConnect?.Invoke(this, null);
                 }
-                catch (SocketException Exception)
-                {
-                    OnError?.Invoke(this, Exception.SocketErrorCode);
-                }
-                catch (ObjectDisposedException)
-                {
-                }
+                _Connection.BeginReceive(_Buffer, 0, _Buffer.Length, SocketFlags.None, AsyncReceive, null);
+                _Enabled = true;
+            }
+            catch (SocketException Exception)
+            {
+                OnError?.Invoke(this, Exception.SocketErrorCode);
+            }
+            catch (ObjectDisposedException)
+            {
             }
         }
 
@@ -123,16 +119,6 @@ namespace CrystalEmuLib.Sockets
             {
                 _Connection.Send(Bytes);
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        protected virtual void Dispose(bool Disposing)
-        {
-            _Connection?.Dispose();
         }
 
         public int BufferSize

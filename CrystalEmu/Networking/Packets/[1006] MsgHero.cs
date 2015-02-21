@@ -1,13 +1,16 @@
-﻿using CrystalEmu.PlayerFunctions;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.Networking.Packets;
-
-namespace CrystalEmu.Networking.Packets
+﻿namespace CrystalEmu.Networking.Packets
 {
-    public partial class CoPacket
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.Networking.Packets;
+    using PlayerFunctions;
+
+    internal partial class CoPacket
     {
         public static byte[] MsgHero(Player Player)
         {
+            if (Player?.Spouse == null || Player.Name == null)
+                return null;
+
             using (var P = new Packet(PacketID.MsgHero, 68 + Player.Name.Length + Player.Spouse.Length))
             {
                 P.Write(Player.UID);

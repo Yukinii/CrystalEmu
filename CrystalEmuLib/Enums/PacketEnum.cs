@@ -11,6 +11,6 @@
         MsgUpdate = 1017,
         MsgConnect = 1051,
         MsgLogin = 1052,
-        MsgTransfer = 1055,
+        MsgTransfer = 1055
     }
 }

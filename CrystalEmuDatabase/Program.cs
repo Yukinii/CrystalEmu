@@ -1,12 +1,12 @@
-﻿using System;
-using System.ServiceModel;
-using CrystalEmuLib.IPC_Comms.Database;
-
-namespace CrystalEmuDatabase
+﻿namespace CrystalEmuDatabase
 {
+    using System;
+    using System.ServiceModel;
+    using CrystalEmuLib.IPC_Comms.Database;
+
     class Program
     {
-        public static ServiceHost DataExchangeHost;
+        private static ServiceHost _DataExchangeHost;
 
         static void Main()
         {
@@ -18,23 +18,18 @@ namespace CrystalEmuDatabase
                 Console.ReadLine();
             }
         }
-        private static void DataExchangeHostClosed(object Sender, EventArgs E)
-        {
-            CreateService();
-        }
+        private static void DataExchangeHostClosed(object Sender, EventArgs E) => CreateService();
 
-        private static void DataExchangeHostFaulted(object Sender, EventArgs E)
-        {
-            CreateService();
-        }
+        private static void DataExchangeHostFaulted(object Sender, EventArgs E) => CreateService();
+
         private static void CreateService()
         {
-            var DataExchangePipe = new NetTcpBinding() { ReceiveTimeout = TimeSpan.MaxValue };
-            DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.2"));
-            DataExchangeHost.AddServiceEndpoint(typeof(IDataExchange), DataExchangePipe, "Database");
-            DataExchangeHost.Faulted += DataExchangeHostFaulted;
-            DataExchangeHost.Closed += DataExchangeHostClosed;
-            DataExchangeHost.Open();
+            var DataExchangePipe = new NetTcpBinding { ReceiveTimeout = TimeSpan.MaxValue };
+            _DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.2"));
+            _DataExchangeHost.AddServiceEndpoint(typeof(IDataExchange), DataExchangePipe, "Database");
+            _DataExchangeHost.Faulted += DataExchangeHostFaulted;
+            _DataExchangeHost.Closed += DataExchangeHostClosed;
+            _DataExchangeHost.Open();
         }
     }
 }

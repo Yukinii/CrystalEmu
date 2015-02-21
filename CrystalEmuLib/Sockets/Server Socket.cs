@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-
-namespace CrystalEmuLib.Sockets
+﻿namespace CrystalEmuLib.Sockets
 {
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+
     public abstract class ServerSocket
     {
         private int _Backlog;
@@ -18,15 +18,12 @@ namespace CrystalEmuLib.Sockets
 
         private void AsyncConnect(IAsyncResult Res)
         {
-            byte Num = 0;
             try
             {
                 var Sender = new YukiSocket(this, _Connection.EndAccept(Res), _Clientbuffersize) {Crypto = MakeCrypto(), Connected = true};
-                Num = (byte)(Num + 1);
                 OnClientConnect?.Invoke(Sender, null);
                 _Connection.BeginAccept(AsyncConnect, null);
                 Sender.Connection.BeginReceive(Sender.Buffer, 0, Sender.Buffer.Length, SocketFlags.None, AsyncReceive, Sender);
-                Num = (byte)(Num + 1);
             }
             catch (SocketException)
             {
@@ -45,11 +42,11 @@ namespace CrystalEmuLib.Sockets
             try
             {
                 SocketError Error;
-                YukiSocket AsyncState = (YukiSocket)Res.AsyncState;
+                var AsyncState = (YukiSocket)Res.AsyncState;
                 AsyncState.RecvSize = AsyncState.Connection.EndReceive(Res, out Error);
                 if (((Error == SocketError.Success) && (AsyncState.RecvSize > 0)) && AsyncState.Connection.Connected)
                 {
-                    byte[] Out = new byte[AsyncState.RecvSize];
+                    var Out = new byte[AsyncState.RecvSize];
                     if (AsyncState.Crypto != null)
                     {
                         AsyncState.Crypto.Decrypt(AsyncState.Buffer, Out, Out.Length);
@@ -81,22 +78,18 @@ namespace CrystalEmuLib.Sockets
 
         public void Disable()
         {
-            if (_Enabled)
-            {
-                _Connection.Close();
-                _Enabled = false;
-            }
+            if (!_Enabled) return;
+            _Connection.Close();
+            _Enabled = false;
         }
 
         public void Enable()
         {
-            if (!_Enabled)
-            {
-                _Connection.Bind(new IPEndPoint(IPAddress.Any, _Port));
-                _Connection.Listen(_Backlog);
-                _Connection.BeginAccept(AsyncConnect, null);
-                _Enabled = true;
-            }
+            if (_Enabled) return;
+            _Connection.Bind(new IPEndPoint(IPAddress.Any, _Port));
+            _Connection.Listen(_Backlog);
+            _Connection.BeginAccept(AsyncConnect, null);
+            _Enabled = true;
         }
 
         private void EnabledCheck(string Variable)
@@ -109,25 +102,22 @@ namespace CrystalEmuLib.Sockets
 
         public void InvokeDisconnect(YukiSocket Client)
         {
-            if (Client != null)
+            if (Client == null) return;
+            try
             {
-                try
+                if (Client.Connected)
                 {
-                    if (Client.Connected)
-                    {
-                        Client.Connection.Shutdown(SocketShutdown.Both);
-                        Client.Connection.Close();
-                    }
-                    else
-                    {
-                        OnClientDisconnect?.Invoke(Client, null);
-                        Client.Ref = null;
-                        Client = null;
-                    }
+                    Client.Connection.Shutdown(SocketShutdown.Both);
+                    Client.Connection.Close();
                 }
-                catch (ObjectDisposedException)
+                else
                 {
+                    OnClientDisconnect?.Invoke(Client, null);
+                    Client.Ref = null;
                 }
+            }
+            catch (ObjectDisposedException)
+            {
             }
         }
 
@@ -159,10 +149,7 @@ namespace CrystalEmuLib.Sockets
             }
         }
 
-        public bool Enabled
-        {
-            get { return _Enabled; }
-        }
+        public bool Enabled => _Enabled;
 
         public ushort Port
         {

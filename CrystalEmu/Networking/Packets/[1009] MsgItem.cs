@@ -1,9 +1,9 @@
-﻿using CrystalEmuLib.Enums;
-using CrystalEmuLib.Networking.Packets;
-
-namespace CrystalEmu.Networking.Packets
+﻿namespace CrystalEmu.Networking.Packets
 {
-    public partial class CoPacket
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.Networking.Packets;
+
+    internal partial class CoPacket
     {
         public static byte[] MsgItem(uint UID, uint Value, MsgItemType Type)
         {

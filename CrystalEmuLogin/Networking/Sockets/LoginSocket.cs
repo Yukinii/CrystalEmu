@@ -1,11 +1,11 @@
-﻿using System;
-using CrystalEmuLib;
-using CrystalEmuLib.Sockets;
-using CrystalEmuLogin.Networking.Queue;
-using CrystalEmuLogin.PlayerFunctions;
-
-namespace CrystalEmuLogin.Networking.Sockets
+﻿namespace CrystalEmuLogin.Networking.Sockets
 {
+    using System;
+    using CrystalEmuLib;
+    using CrystalEmuLib.Sockets;
+    using PlayerFunctions;
+    using Queue;
+
     internal static class LoginSocket
     {
         public static YukiServer Socket;

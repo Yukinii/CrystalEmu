@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using CrystalEmu.Networking.Packets;
-using CrystalEmu.PlayerFunctions;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.Extensions;
-
-namespace CrystalEmu.Networking.Handlers
+﻿namespace CrystalEmu.Networking.Handlers
 {
+    using System;
+    using System.Threading.Tasks;
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.Extensions;
+    using Packets;
+    using PlayerFunctions;
+
     public static class MsgWalk
     {
         public static async Task Handle(Player Player, byte[] Packet)

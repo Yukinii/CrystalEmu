@@ -1,8 +1,8 @@
-﻿using System.Net.Sockets;
-using System.Threading.Tasks;
-
-namespace CrystalEmuLib.Sockets
+﻿namespace CrystalEmuLib.Sockets
 {
+    using System.Net.Sockets;
+    using System.Threading.Tasks;
+
     public class YukiSocket
     {
         public readonly byte[] Buffer;
@@ -61,9 +61,6 @@ namespace CrystalEmuLib.Sockets
 
         public ServerSocket Server { get; }
 
-        public void SendClear(byte[] Packet)
-        {
-            Connection.Send(Packet);
-        }
+        public void SendClear(byte[] Packet) => Connection.Send(Packet);
     }
 }

@@ -1,8 +1,8 @@
-﻿using System;
-using CrystalEmuLib.IPC_Comms.Database;
-
-namespace CrystalEmuLib
+﻿namespace CrystalEmuLib
 {
+    using System;
+    using IPC_Comms.Database;
+
     public static class Core
     {
         public static IDataExchange DbServerConnection;

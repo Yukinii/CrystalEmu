@@ -1,11 +1,11 @@
-﻿using System;
-using CrystalEmu.Networking.Queue;
-using CrystalEmu.PlayerFunctions;
-using CrystalEmuLib;
-using CrystalEmuLib.Sockets;
-
-namespace CrystalEmu.Networking.Sockets
+﻿namespace CrystalEmu.Networking.Sockets
 {
+    using System;
+    using CrystalEmuLib;
+    using CrystalEmuLib.Sockets;
+    using PlayerFunctions;
+    using Queue;
+
     internal static class GameSocket
     {
         public static YukiServer Socket;

@@ -1,8 +1,8 @@
-﻿using System.IO;
-using System.Text;
-
-namespace CrystalEmuLib.Sockets
+﻿namespace CrystalEmuLib.Sockets
 {
+    using System.IO;
+    using System.Text;
+
     public static class Rc5
     {
         private static readonly uint[] Key =

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Globalization;
-using System.ServiceModel;
-using System.Threading;
-using System.Threading.Tasks;
-using CrystalEmuLib.IPC_Comms.Database;
-
-namespace CrystalEmuLib.IPC_Comms.Shared
+﻿namespace CrystalEmuLib.IPC_Comms.Shared
 {
+    using System;
+    using System.Collections.Concurrent;
+    using System.Globalization;
+    using System.ServiceModel;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Database;
+
     public static class IPC
     {
         private static readonly Thread ConsumerThread = new Thread(Loop);

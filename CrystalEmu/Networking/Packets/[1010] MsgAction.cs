@@ -1,10 +1,10 @@
-﻿using System;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.Networking.Packets;
-
-namespace CrystalEmu.Networking.Packets
+﻿namespace CrystalEmu.Networking.Packets
 {
-    public partial class CoPacket
+    using System;
+    using CrystalEmuLib.Enums;
+    using CrystalEmuLib.Networking.Packets;
+
+    internal partial class CoPacket
     {
         public static byte[] GeneralData(uint UID, uint Value1, ushort Value2, ushort Value3, MsgActionType Type)
         {
