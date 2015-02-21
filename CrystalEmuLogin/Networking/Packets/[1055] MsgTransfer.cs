@@ -16,7 +16,7 @@ namespace CrystalEmuLogin.Networking.Packets
             using (var P = new Packet(PacketID.MsgTransfer, 32))
             {
                 P.Write(Player.UID);
-                P.Write(Security.Hash((short) (Player.UID - 1000000), (short) (Player.UID - 999999)));
+                P.Write(Security.Hash((short)(Player.UID - 1000000), (short)(Player.UID - 999999)));
                 P.Write(Player.ServerInfo.IP, false);
                 P.Write(Player.ServerInfo.Port, 28);
                 return P.Finish();

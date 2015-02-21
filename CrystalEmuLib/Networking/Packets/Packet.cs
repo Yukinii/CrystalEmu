@@ -19,19 +19,24 @@ namespace CrystalEmuLib.Networking.Packets
             _Writer.Write((ushort)ID);
         }
 
-        public void Write(byte Value, int Offset = -1)
+        public void Write(byte Value, int Offset = - 1)
         {
-            if (Offset != -1)
+            if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
-        public void Write(uint Value, int Offset = -1)
+
+        public void Write(uint Value, int Offset = - 1)
         {
-            if (Offset != -1)
+            if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
@@ -39,51 +44,58 @@ namespace CrystalEmuLib.Networking.Packets
         public void Write(ulong Value, int Offset = - 1)
         {
             if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
 
-        public void Write(int Value, int Offset = -1)
+        public void Write(int Value, int Offset = - 1)
         {
-            if (Offset != -1)
+            if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
 
-        public void Write(ushort Value, int Offset = -1)
+        public void Write(ushort Value, int Offset = - 1)
         {
-            if (Offset != -1)
+            if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
 
-        public void Write(short Value, int Offset = -1)
+        public void Write(short Value, int Offset = - 1)
         {
-            if (Offset != -1)
+            if (Offset != - 1)
+            {
                 if (_Writer != null)
                     _Writer.BaseStream.Position = Offset;
+            }
 
             _Writer?.Write(Value);
         }
+
         public void Write(string Value, bool PrefixLenght)
         {
             if (PrefixLenght)
             {
                 var Array = Value?.ToCharArray();
                 if (Array == null) return;
-                _Writer?.Write((byte) Array.Length);
+                _Writer?.Write((byte)Array.Length);
                 _Writer?.Write(Array);
             }
             else
-            {
                 _Writer?.Write(Value?.ToCharArray());
-            }
         }
 
         public byte[] Finish() => _Buffer;

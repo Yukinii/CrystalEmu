@@ -14,7 +14,7 @@ namespace CrystalEmu.Networking.Handlers
     {
         public static async Task Handle(Player Player, byte[] Packet)
         {
-            var SubType = (MsgActionType) Packet[22];
+            var SubType = (MsgActionType)Packet[22];
 
             switch (SubType)
             {
@@ -70,7 +70,7 @@ namespace CrystalEmu.Networking.Handlers
                 case MsgActionType.Sync:
                 case MsgActionType.ViewOthersEquip:
                 {
-                    Core.WriteLine("Unhandled MsgAction Type: " + (byte) SubType, ConsoleColor.Red);
+                    Core.WriteLine("Unhandled MsgAction Type: " + (byte)SubType, ConsoleColor.Red);
                     break;
                 }
             }
@@ -87,19 +87,17 @@ namespace CrystalEmu.Networking.Handlers
                 Player.Send(CoPacket.GeneralData(Player.UID, (ushort)Player.Z, (ushort)Player.X, (ushort)Player.Y, MsgActionType.MapShow));
             }
             else
-            {
                 Player.Disconnect();
-            }
         }
 
         private static void ProcessJump(Player Player, byte[] Packet)
         {
             var Timestamp = Packet.ToUInt(4);
-            var UID       = Packet.ToUInt(8);
-            var X         = Packet.ToUShort(12);
-            var Y         = Packet.ToUShort(14);
-            var CurrentX  = Packet.ToUShort(16);
-            var CurrentY  = Packet.ToUShort(18);
+            var UID = Packet.ToUInt(8);
+            var X = Packet.ToUShort(12);
+            var Y = Packet.ToUShort(14);
+            var CurrentX = Packet.ToUShort(16);
+            var CurrentY = Packet.ToUShort(18);
 
             if (Player.UID != UID)
                 Player.Disconnect();

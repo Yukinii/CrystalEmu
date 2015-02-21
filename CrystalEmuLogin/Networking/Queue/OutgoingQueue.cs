@@ -31,16 +31,16 @@ namespace CrystalEmuLogin.Networking.Queue
                 }
             }
         }
-        
+
         public static void Add(Player P, byte[] Packet)
         {
             if (Packet == null || P == null)
                 return;
 
-            if(Packet.Length != Packet.Size())
+            if (Packet.Length != Packet.Size())
                 return;
-            
-            Packets.Enqueue(new PacketInfo { Owner = P, Packet = Packet });
+
+            Packets.Enqueue(new PacketInfo {Owner = P, Packet = Packet});
             AutoResetEvent.Set();
         }
 
@@ -49,10 +49,11 @@ namespace CrystalEmuLogin.Networking.Queue
             ConsumerThread.Abort();
             Core.WriteLine("Outgoing PacketQueue stopped!", ConsoleColor.Red);
         }
+
         public static void Start()
         {
             ConsumerThread.Start();
-            Core.WriteLine("Outgoing PacketQueue started!",ConsoleColor.Green);
+            Core.WriteLine("Outgoing PacketQueue started!", ConsoleColor.Green);
         }
     }
 }

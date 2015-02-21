@@ -14,6 +14,7 @@ namespace CrystalEmuLib
             Console.WriteLine(Text);
             Console.ResetColor();
         }
+
         public static void Write(object Text, ConsoleColor Color)
         {
             Console.ForegroundColor = Color;

@@ -32,22 +32,22 @@ namespace CrystalEmu.Networking.Queue
                     {
                         case PacketID.MsgLogin:
                         {
-                            await MsgLogin.Handle((Player) Pi.Owner, Pi.Packet);
+                            await MsgLogin.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                         case PacketID.MsgAction:
                         {
-                            await MsgAction.Handle((Player) Pi.Owner, Pi.Packet);
+                            await MsgAction.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                         case PacketID.MsgItem:
                         {
-                            await MsgItem.Handle((Player) Pi.Owner, Pi.Packet);
+                            await MsgItem.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                         case PacketID.MsgWalk:
                         {
-                            await MsgWalk.Handle((Player) Pi.Owner, Pi.Packet);
+                            await MsgWalk.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                         default:
@@ -59,7 +59,7 @@ namespace CrystalEmu.Networking.Queue
                 }
             }
         }
-        
+
         public static void Add(Player P, byte[] Packet)
         {
             if (Packet == null || P == null)
@@ -68,7 +68,7 @@ namespace CrystalEmu.Networking.Queue
             if (Packet.Length != Packet.Size())
                 return;
 
-            Packets.Enqueue(new PacketInfo { Owner = P, Packet = Packet });
+            Packets.Enqueue(new PacketInfo {Owner = P, Packet = Packet});
             AutoResetEvent.Set();
         }
 
@@ -77,6 +77,7 @@ namespace CrystalEmu.Networking.Queue
             ConsumerThread.Abort();
             Core.WriteLine("Incoming PacketQueue stopped!", ConsoleColor.Red);
         }
+
         public static void Start()
         {
             ConsumerThread.Start();

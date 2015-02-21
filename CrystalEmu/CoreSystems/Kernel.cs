@@ -5,6 +5,6 @@ namespace CrystalEmu.CoreSystems
 {
     public static class Kernel
     {
-        public static readonly ConcurrentDictionary<uint, Player> Players = new ConcurrentDictionary<uint, Player>(); 
+        public static readonly ConcurrentDictionary<uint, Player> Players = new ConcurrentDictionary<uint, Player>();
     }
 }

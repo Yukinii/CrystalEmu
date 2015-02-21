@@ -44,7 +44,7 @@ namespace CrystalEmu.Networking.Handlers
                 case MsgItemType.UpgradeMeteor:
                 case MsgItemType.WithdrawWarehouseMoney:
                 {
-                    Core.WriteLine("Unhandled MsgItem Type: " + (byte)SubType,ConsoleColor.Red);
+                    Core.WriteLine("Unhandled MsgItem Type: " + (byte)SubType, ConsoleColor.Red);
                     break;
                 }
             }

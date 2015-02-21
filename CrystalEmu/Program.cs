@@ -8,7 +8,7 @@ namespace CrystalEmu
 {
     internal class Program
     {
-        static void Main()
+        private static void Main()
         {
             Console.Title = "CrystalEmu - Map Server: 1010 (Birth Village)";
             while (!DatabaseConnection.Open().Result)
@@ -21,25 +21,27 @@ namespace CrystalEmu
             Core.WriteLine("Online! Type help or ? for available commands!", ConsoleColor.White);
 
             #region Console Command Listener
+
             while (true)
             {
                 switch (Console.ReadLine()?.ToLowerInvariant())
                 {
                     case "help":
                     case "?":
-                        {
-                            Console.WriteLine("Available Commands: exit (kills the server)");
-                            break;
-                        }
+                    {
+                        Console.WriteLine("Available Commands: exit (kills the server)");
+                        break;
+                    }
                     case "exit":
-                        {
-                            IncomingQueue.Stop();
-                            OutgoingQueue.Stop();
-                            Environment.Exit(0);
-                            break;
-                        }
+                    {
+                        IncomingQueue.Stop();
+                        OutgoingQueue.Stop();
+                        Environment.Exit(0);
+                        break;
+                    }
                 }
             }
+
             #endregion
         }
     }

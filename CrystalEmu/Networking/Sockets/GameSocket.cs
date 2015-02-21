@@ -22,7 +22,7 @@ namespace CrystalEmu.Networking.Sockets
                     OnClientReceive = Handle
                 };
                 Socket.Enable();
-                Core.WriteLine(" [Success]",ConsoleColor.Green);
+                Core.WriteLine(" [Success]", ConsoleColor.Green);
             }
             catch
             {

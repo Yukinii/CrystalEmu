@@ -12,6 +12,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
     public static class DatabaseConnection
     {
         public static bool ConnectionOpen;
+
         public static void Open()
         {
             try
@@ -38,7 +39,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             if (!PingDB())
                 return false;
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue,Player.Username + "\\AccountInfo.ini", "Account");
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\AccountInfo.ini", "Account");
 
             if (!Directory.Exists(DataExchange.AccountDatabasePath + Player.Username + @"\"))
             {
@@ -50,18 +51,18 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 await IPC.Set(Exchange, "Password", Player.Password);
             }
 
-            if (await IPC.Get(Exchange, "Username","") != Player.Username)
+            if (await IPC.Get(Exchange, "Username", "") != Player.Username)
                 return false;
 
             if (await IPC.Get(Exchange, "LoginType", "ERROR") == "Banned")
                 return false;
 
-            var Pass = await IPC.Get(Exchange, "Password","");
+            var Pass = await IPC.Get(Exchange, "Password", "");
 
             if (Pass == "")
             {
                 Player.UID = LastUID;
-                await  IPC.Set(Exchange, "Password", Player.Password);
+                await IPC.Set(Exchange, "Password", Player.Password);
                 LastUID += 1;
                 return (Player.UID != 0);
             }
@@ -69,7 +70,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             if (Pass != Player.Password)
                 return false;
 
-            Player.UID = await IPC.Get(Exchange, "UID",(uint)0);
+            Player.UID = await IPC.Get(Exchange, "UID", (uint)0);
             return (Player.UID != 0);
         }
 
@@ -106,13 +107,14 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 }
                 catch
                 {
-                    Core.WriteLine(" [Fail]",ConsoleColor.Red);
+                    Core.WriteLine(" [Fail]", ConsoleColor.Red);
                 }
             }
             return false;
         }
-        
+
         private static uint _LastUI;
+
         private static uint LastUID
         {
             get

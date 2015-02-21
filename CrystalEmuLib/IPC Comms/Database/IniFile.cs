@@ -10,35 +10,36 @@ namespace CrystalEmuLib.IPC_Comms.Database
 {
     public class IniFile
     {
-
         #region "Declarations"
+
         private string _FileName;
         private bool _CacheModified;
 
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Sections = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Modified = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
+
         #endregion
 
         #region "Methods"
-        
+
         public IniFile(string FileName)
         {
             Initialize(FileName);
         }
-        
+
         private void Initialize(string FileName)
         {
             _FileName = FileName;
             Refresh();
         }
-        
+
         private static string ParseSectionName(string Line)
         {
             if (!Line.StartsWith("[", StringComparison.Ordinal)) return null;
             if (!Line.EndsWith("]", StringComparison.Ordinal)) return null;
             return Line.Length < 3 ? null : Line.Substring(1, Line.Length - 2);
         }
-        
+
         private static bool ParseKeyValuePair(string Line, ref string Key, ref string Value)
         {
             int I;
@@ -79,9 +80,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                     if (SectionName != null)
                     {
                         if (_Sections.ContainsKey(SectionName))
-                        {
                             CurrentSection = null;
-                        }
                         else
                         {
                             CurrentSection = new ConcurrentDictionary<string, string>();
@@ -93,9 +92,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                         if (!ParseKeyValuePair(S, ref Key, ref Value)) continue;
 
                         if (!CurrentSection.ContainsKey(Key))
-                        {
                             CurrentSection.TryAdd(Key, Value);
-                        }
                     }
                 }
             }
@@ -129,7 +126,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                         Console.WriteLine("Fail.");
                     }
                 }
-                var Sw = new StreamWriter(TmpFileName) { AutoFlush = true };
+                var Sw = new StreamWriter(TmpFileName) {AutoFlush = true};
 
                 try
                 {
@@ -202,9 +199,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                                 }
 
                                 if (Unmodified)
-                                {
                                     Sw.WriteLine(S);
-                                }
                             }
 
                             Sr.Close();
@@ -248,7 +243,6 @@ namespace CrystalEmuLib.IPC_Comms.Database
             {
                 Console.WriteLine(E);
             }
-
         }
 
         // *** Read a value from local cache ***
@@ -267,7 +261,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
             // *** Check if the section exists ***
             ConcurrentDictionary<string, string> Section;
             if (!_Sections.TryGetValue(SectionName, out Section)) return "";
-            
+
             string Value;
             return !Section.TryGetValue(Key, out Value) ? "nil" : Value;
         }
@@ -284,10 +278,12 @@ namespace CrystalEmuLib.IPC_Comms.Database
             }
 
             if (Section.ContainsKey(Key))
+            {
                 while (!Section.TryRemove(Key))
                 {
                     await Task.Delay(10);
                 }
+            }
             Section.TryAdd(Key, Convert.ToString(Value));
 
             if (!_Modified.TryGetValue(SectionName, out Section))
@@ -297,13 +293,15 @@ namespace CrystalEmuLib.IPC_Comms.Database
             }
 
             if (Section.ContainsKey(Key))
+            {
                 while (!Section.TryRemove(Key))
                 {
                     await Task.Delay(10);
                 }
+            }
             Section.TryAdd(Key, Convert.ToString(Value));
         }
-        
+
         public bool GetValue(string SectionName, string Key, bool DefaultValue)
         {
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
@@ -318,12 +316,14 @@ namespace CrystalEmuLib.IPC_Comms.Database
             int Value;
             return int.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
         }
+
         public byte ReadByte(string SectionName, string Key, byte DefaultValue)
         {
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
             byte Value;
             return byte.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
         }
+
         public ushort ReadShort(string SectionName, string Key, ushort DefaultValue)
         {
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
@@ -352,7 +352,6 @@ namespace CrystalEmuLib.IPC_Comms.Database
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
             double Value;
             return double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
-
         }
     }
 }

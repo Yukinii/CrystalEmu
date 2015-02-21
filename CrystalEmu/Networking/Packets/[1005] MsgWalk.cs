@@ -11,7 +11,7 @@ namespace CrystalEmu.Networking.Packets
             {
                 P.Write(UID);
                 P.Write(Dir);
-                P.Write((byte) (Run ? 1 : 0));
+                P.Write((byte)(Run ? 1 : 0));
                 return P.Finish();
             }
         }

@@ -32,7 +32,9 @@ namespace CrystalEmuLib.Sockets
             {
                 var PassInts = new uint[4];
                 for (uint I = 0; I < 4; I++)
+                {
                     PassInts[I] = (uint)Reader.ReadInt32();
+                }
 
                 for (var I = 1; I >= 0; I--)
                 {
@@ -42,17 +44,20 @@ namespace CrystalEmuLib.Sockets
                     {
                         Temp1 = RightRotate(Temp1 - Key[J * 2 + 7], Temp2) ^ Temp2;
                         Temp2 = RightRotate(Temp2 - Key[J * 2 + 6], Temp1) ^ Temp1;
-
                     }
                     PassInts[I * 2 + 1] = Temp1 - Key[5];
                     PassInts[I * 2] = Temp2 - Key[4];
                 }
                 var Writer = new BinaryWriter(new MemoryStream(Bytes, true));
                 for (uint I = 0; I < 4; I++)
+                {
                     Writer.Write((int)PassInts[I]);
+                }
                 for (var I = 0; I < 16; I++)
+                {
                     if (Bytes[I] == 0)
                         return Encoding.ASCII.GetString(Bytes, 0, I);
+                }
                 return Encoding.ASCII.GetString(Bytes);
             }
         }

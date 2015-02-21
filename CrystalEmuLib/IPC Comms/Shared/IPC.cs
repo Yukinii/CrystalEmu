@@ -32,6 +32,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
 
             return Tcs.Task;
         }
+
         public static Task<bool> Set(DataExchange Ex, string Key, bool Value)
         {
             var Tcs = new TaskCompletionSource<bool>();
@@ -50,6 +51,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
 
             return Tcs.Task;
         }
+
         public static Task<bool> Set(DataExchange Ex, string Key, ulong Value)
         {
             var Tcs = new TaskCompletionSource<bool>();
@@ -68,6 +70,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
 
             return Tcs.Task;
         }
+
         public static Task<bool> Set(DataExchange Ex, string Key, int Value)
         {
             var Tcs = new TaskCompletionSource<bool>();
@@ -134,9 +137,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
         public static void Initialize()
         {
             if (!ConsumerThread.IsAlive)
-            {
                 ConsumerThread.Start();
-            }
         }
 
         public static void Enqueue(DataExchange De)
@@ -144,6 +145,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
             PendingOps.Enqueue(De.Clone());
             ResetEvent.Set();
         }
+
         private static async void Loop()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());

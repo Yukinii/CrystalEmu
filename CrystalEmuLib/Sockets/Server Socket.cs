@@ -28,9 +28,7 @@ namespace CrystalEmuLib.Sockets
             catch (SocketException)
             {
                 if (_Enabled)
-                {
                     _Connection.BeginAccept(AsyncConnect, null);
-                }
             }
             catch (ObjectDisposedException)
             {
@@ -48,13 +46,9 @@ namespace CrystalEmuLib.Sockets
                 {
                     var Out = new byte[AsyncState.RecvSize];
                     if (AsyncState.Crypto != null)
-                    {
                         AsyncState.Crypto.Decrypt(AsyncState.Buffer, Out, Out.Length);
-                    }
                     else
-                    {
                         Array.Copy(AsyncState.Buffer, 0, Out, 0, AsyncState.RecvSize);
-                    }
                     OnClientReceive?.Invoke(AsyncState, Out);
                     AsyncState.Connection.BeginReceive(AsyncState.Buffer, 0, AsyncState.Buffer.Length, SocketFlags.None, AsyncReceive, AsyncState);
                 }
@@ -62,9 +56,7 @@ namespace CrystalEmuLib.Sockets
                 {
                     AsyncState.Connected = false;
                     if ((Error != SocketError.Success))
-                    {
                         OnClientError?.Invoke(AsyncState, Error);
-                    }
                     InvokeDisconnect(AsyncState);
                 }
             }
@@ -95,9 +87,7 @@ namespace CrystalEmuLib.Sockets
         private void EnabledCheck(string Variable)
         {
             if (_Enabled)
-            {
                 throw new Exception("Cannot modify " + Variable + " while socket is enabled.");
-            }
         }
 
         public void InvokeDisconnect(YukiSocket Client)
@@ -125,10 +115,7 @@ namespace CrystalEmuLib.Sockets
 
         public int Backlog
         {
-            get
-            {
-                return _Backlog;
-            }
+            get { return _Backlog; }
             set
             {
                 EnabledCheck("Backlog");
@@ -138,10 +125,7 @@ namespace CrystalEmuLib.Sockets
 
         public int ClientBufferSize
         {
-            get
-            {
-                return _Clientbuffersize;
-            }
+            get { return _Clientbuffersize; }
             set
             {
                 EnabledCheck("ClientBufferSize");
@@ -153,10 +137,7 @@ namespace CrystalEmuLib.Sockets
 
         public ushort Port
         {
-            get
-            {
-                return _Port;
-            }
+            get { return _Port; }
             set
             {
                 EnabledCheck("Port");

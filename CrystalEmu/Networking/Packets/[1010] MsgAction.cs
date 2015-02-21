@@ -15,8 +15,8 @@ namespace CrystalEmu.Networking.Packets
                 P.Write(Value1);
                 P.Write(Value2);
                 P.Write(Value3);
-                P.Write((ushort) 0);
-                P.Write((short) Type);
+                P.Write((ushort)0);
+                P.Write((short)Type);
                 return P.Finish();
             }
         }

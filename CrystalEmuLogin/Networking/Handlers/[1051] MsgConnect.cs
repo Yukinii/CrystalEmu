@@ -21,12 +21,12 @@ namespace CrystalEmuLogin.Networking.Handlers
 
             if (await DatabaseConnection.Authenticate(Player))
             {
-                Player.ServerInfo =await DatabaseConnection.FindServer(Player);
+                Player.ServerInfo = await DatabaseConnection.FindServer(Player);
                 Player.Send(CoPacket.MsgTransfer(Player));
                 return;
             }
             Player.Disconnect();
-            Core.WriteLine("Invalid Password",ConsoleColor.Red);
+            Core.WriteLine("Invalid Password", ConsoleColor.Red);
         }
     }
 }

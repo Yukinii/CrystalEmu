@@ -4,11 +4,11 @@ using CrystalEmuLib.IPC_Comms.Database;
 
 namespace CrystalEmuDatabase
 {
-    class Program
+    internal class Program
     {
         private static ServiceHost _DataExchangeHost;
 
-        static void Main()
+        private static void Main()
         {
             Console.Title = "CrystalEmu Database Server!";
             CreateService();
@@ -18,13 +18,14 @@ namespace CrystalEmuDatabase
                 Console.ReadLine();
             }
         }
+
         private static void DataExchangeHostClosed(object Sender, EventArgs E) => CreateService();
 
         private static void DataExchangeHostFaulted(object Sender, EventArgs E) => CreateService();
 
         private static void CreateService()
         {
-            var DataExchangePipe = new NetTcpBinding { ReceiveTimeout = TimeSpan.MaxValue };
+            var DataExchangePipe = new NetTcpBinding {ReceiveTimeout = TimeSpan.MaxValue};
             _DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.2"));
             _DataExchangeHost.AddServiceEndpoint(typeof(IDataExchange), DataExchangePipe, "Database");
             _DataExchangeHost.Faulted += DataExchangeHostFaulted;

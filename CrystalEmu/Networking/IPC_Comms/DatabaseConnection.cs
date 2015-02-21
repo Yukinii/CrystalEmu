@@ -20,7 +20,7 @@ namespace CrystalEmu.Networking.IPC_Comms
 
                 if (!await PingDB())
                     return false;
-                
+
                 Core.WriteLine(" [Success]", ConsoleColor.Green);
                 return true;
             }
@@ -43,6 +43,7 @@ namespace CrystalEmu.Networking.IPC_Comms
 
             return true;
         }
+
         public static async Task<bool> LoadCharacer(Player Player)
         {
             if (!await PingDB())
@@ -54,7 +55,7 @@ namespace CrystalEmu.Networking.IPC_Comms
             Player.Model = await IPC.Get(Exchange, "Model", 1003);
             Player.Hair = await IPC.Get(Exchange, "Hair", 1);
             Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
-            Player.Level = (byte)await IPC.Get(Exchange, "Level",1);
+            Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
             Player.Cps = await IPC.Get(Exchange, "Cps", 0);
             Player.Money = await IPC.Get(Exchange, "Money", 1000);
             Player.CurrentHP = await IPC.Get(Exchange, "CurrentHP", 1);
@@ -65,7 +66,7 @@ namespace CrystalEmu.Networking.IPC_Comms
 
         public static async Task<ServerInfo> FindServer(Player Player)
         {
-            if (! await PingDB())
+            if (!await PingDB())
                 return null;
 
             var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\PlayerInfo.ini", "Character");

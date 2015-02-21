@@ -21,12 +21,14 @@ namespace CrystalEmuLib.IPC_Comms.Database
         Response = 6,
         Ping = 255
     }
+
     [ServiceContract]
     public interface IDataExchange
     {
         [OperationContract]
         Task<string> Execute(DataExchange De);
     }
+
     [Serializable]
     public class DataExchange : IDataExchange
     {
@@ -39,6 +41,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
         public string Key;
         public string Value;
         public string Response;
+
         public DataExchange()
         {
             if (AutoFlushTimer != null)
@@ -47,6 +50,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
             AutoFlushTimer.Interval = 1500;
             AutoFlushTimer.Start();
         }
+
         public DataExchange(ExchangeType EType, string Path, string Section)
         {
             this.EType = EType;
@@ -137,6 +141,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
             }
             return Writer;
         }
+
         public DataExchange Clone()
         {
             var Copy = new DataExchange

@@ -33,9 +33,7 @@ namespace CrystalEmuLib.Sockets
                 {
                     var Buff = new byte[AsyncState.RecvSize];
                     if (Crypto != null)
-                    {
                         Crypto.Decrypt(AsyncState.Buffer, Buff, Buff.Length);
-                    }
                     else
                     {
                         Buff = new byte[AsyncState.RecvSize];
@@ -49,9 +47,7 @@ namespace CrystalEmuLib.Sockets
                 {
                     _Enabled = false;
                     if ((Error != SocketError.Success))
-                    {
                         OnError?.Invoke(this, Error);
-                    }
                     OnDisconnect?.Invoke(this, null);
                 }
             }
@@ -81,9 +77,7 @@ namespace CrystalEmuLib.Sockets
                 OnConnecting?.Invoke(this, null);
                 _Connection.Connect(_Remoteip, _Remoteport);
                 if (_Connection.Connected)
-                {
                     OnConnect?.Invoke(this, null);
-                }
                 _Connection.BeginReceive(_Buffer, 0, _Buffer.Length, SocketFlags.None, AsyncReceive, null);
                 _Enabled = true;
             }
@@ -99,9 +93,7 @@ namespace CrystalEmuLib.Sockets
         private void EnabledCheck(string Variable)
         {
             if (_Enabled)
-            {
                 throw new Exception("Cannot modify " + Variable + " while socket is enabled.");
-            }
         }
 
         public void Send(byte[] Bytes)
@@ -116,17 +108,12 @@ namespace CrystalEmuLib.Sockets
                 _Connection.Send(Out);
             }
             else
-            {
                 _Connection.Send(Bytes);
-            }
         }
 
         public int BufferSize
         {
-            get
-            {
-                return _Buffer.Length;
-            }
+            get { return _Buffer.Length; }
             set
             {
                 EnabledCheck("BufferSize");
@@ -140,10 +127,7 @@ namespace CrystalEmuLib.Sockets
 
         public string RemoteIP
         {
-            get
-            {
-                return _Remoteip;
-            }
+            get { return _Remoteip; }
             set
             {
                 EnabledCheck("RemoteIP");
@@ -153,10 +137,7 @@ namespace CrystalEmuLib.Sockets
 
         public ushort RemotePort
         {
-            get
-            {
-                return _Remoteport;
-            }
+            get { return _Remoteport; }
             set
             {
                 EnabledCheck("RemotePort");

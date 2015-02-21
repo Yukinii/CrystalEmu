@@ -6,9 +6,9 @@ using CrystalEmuLogin.Networking.Sockets;
 
 namespace CrystalEmuLogin
 {
-    class Program
+    internal class Program
     {
-        static void Main()
+        private static void Main()
         {
             Console.Title = "CrystalEmu - Login Server";
             while (!DatabaseConnection.ConnectionOpen)
@@ -21,6 +21,7 @@ namespace CrystalEmuLogin
             Core.WriteLine("Online! Type help or ? for available commands!", ConsoleColor.White);
 
             #region Console Command Listener
+
             while (true)
             {
                 switch (Console.ReadLine()?.ToLowerInvariant())
@@ -40,6 +41,7 @@ namespace CrystalEmuLogin
                     }
                 }
             }
+
             #endregion
         }
     }
