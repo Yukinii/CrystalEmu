@@ -10,13 +10,6 @@ namespace CrystalEmuLib.IPC_Comms.Database
 {
     public class IniFile
     {
-        public double ReadDouble(string SectionName, string Key, double DefaultValue = 0)
-        {
-            var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            double Value;
-            return double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
-        }
-
         #region "Declarations"
 
         private string _FileName;
@@ -214,6 +207,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                         }
                         finally
                         {
+                            // ReSharper disable once ConstantConditionalAccessQualifier
                             Sr?.Close();
                         }
                     }
@@ -243,6 +237,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                 }
                 finally
                 {
+                    // ReSharper disable once ConstantConditionalAccessQualifier
                     Sw?.Close();
                 }
             }
@@ -337,7 +332,12 @@ namespace CrystalEmuLib.IPC_Comms.Database
             ushort Value;
             return ushort.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
         }
-
+        public double ReadDouble(string SectionName, string Key, double DefaultValue = 0)
+        {
+            var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
+            double Value;
+            return double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
+        }
         public DateTime GetValue(string SectionName, string Key, DateTime DefaultValue)
         {
             var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));

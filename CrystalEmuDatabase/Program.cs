@@ -10,7 +10,7 @@ namespace CrystalEmuDatabase
 
         private static void Main()
         {
-            Console.Title = "CrystalEmu Database Server!";
+            Console.Title = "CrystalEmu DB Server! (Green=Cached R/W | Red=Non Cached R/W)";
             CreateService();
             Console.WriteLine("Running & Ready!");
             while (true)
@@ -24,7 +24,7 @@ namespace CrystalEmuDatabase
 
         private static void CreateService()
         {
-            var DataExchangePipe = new NetTcpBinding {ReceiveTimeout = TimeSpan.MaxValue};
+            var DataExchangePipe = new NetTcpBinding { ReceiveTimeout = TimeSpan.MaxValue, SendTimeout = TimeSpan.MaxValue};
             _DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.2"));
             _DataExchangeHost.AddServiceEndpoint(typeof(IDataExchange), DataExchangePipe, "Database");
             _DataExchangeHost.Faulted += DataExchangeHostFaulted;

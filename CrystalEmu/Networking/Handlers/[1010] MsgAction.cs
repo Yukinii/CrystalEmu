@@ -12,7 +12,7 @@ namespace CrystalEmu.Networking.Handlers
 {
     public static class MsgAction
     {
-        public static async Task Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, byte[] Packet)
         {
             var SubType = (MsgActionType)Packet[22];
 
@@ -20,7 +20,7 @@ namespace CrystalEmu.Networking.Handlers
             {
                 case MsgActionType.MapShow:
                 {
-                    await ProcessLogin(Player);
+                    ProcessLogin(Player);
                     break;
                 }
                 case MsgActionType.Jump:
@@ -76,7 +76,7 @@ namespace CrystalEmu.Networking.Handlers
             }
         }
 
-        private static async Task ProcessLogin(Player Player)
+        private static async void ProcessLogin(Player Player)
         {
             Kernel.Players.TryAdd(Player.UID, Player);
 

@@ -11,7 +11,7 @@ namespace CrystalEmu.Networking.Handlers
 {
     public static class MsgLogin
     {
-        public static async Task Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, byte[] Packet)
         {
             if (Player == null || Packet.Length != Packet.Size())
                 return;

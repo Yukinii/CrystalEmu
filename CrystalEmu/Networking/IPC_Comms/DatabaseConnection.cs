@@ -37,10 +37,10 @@ namespace CrystalEmu.Networking.IPC_Comms
             if (!await PingDB())
                 return false;
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\PlayerInfo.ini", "Account");
-            Player.X = await IPC.Get(Exchange, "TransferX", 61);
-            Player.Y = await IPC.Get(Exchange, "TransferY", 109);
-            Player.Z = await IPC.Get(Exchange, "TransferMap", 1010);
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath+ Player.Username + "\\PlayerInfo.ini", "Account");
+            Player.X = IPC.Get(Exchange, "TransferX", 61);
+            Player.Y = IPC.Get(Exchange, "TransferY", 109);
+            Player.Z = IPC.Get(Exchange, "TransferMap", 1010);
 
             return true;
         }
@@ -50,22 +50,22 @@ namespace CrystalEmu.Networking.IPC_Comms
             if (!await PingDB())
                 return false;
             var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
-            Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
+            Player.Username = IPC.Get(TempExchange, Player.UID.ToString(), "0");
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\PlayerInfo.ini", "Character");
-            Player.Name = await IPC.Get(Exchange, "Name", "ERROR");
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Character");
+            Player.Name = IPC.Get(Exchange, "Name", "ERROR");
 
             Player.InitializeDatabaseConnection();
 
-            Player.Spouse = await IPC.Get(Exchange, "Spouse", "None");
-            Player.Model = await IPC.Get(Exchange, "Model", 1003);
-            Player.Hair = await IPC.Get(Exchange, "Hair", 1);
-            Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
-            Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
-            Player.Cps = await IPC.Get(Exchange, "Cps", 0);
-            Player.Money = await IPC.Get(Exchange, "Money", 1000);
-            Player.CurrentHP = await IPC.Get(Exchange, "CurrentHP", 1);
-            Player.CurrentMP = await IPC.Get(Exchange, "CurrentMP", 0);
+            Player.Spouse = IPC.Get(Exchange, "Spouse", "None");
+            Player.Model = IPC.Get(Exchange, "Model", 1003);
+            Player.Hair = IPC.Get(Exchange, "Hair", 1);
+            Player.Class = (byte)IPC.Get(Exchange, "Class", 10);
+            Player.Level = (byte)IPC.Get(Exchange, "Level", 1);
+            Player.Cps = IPC.Get(Exchange, "Cps", 0);
+            Player.Money = IPC.Get(Exchange, "Money", 1000);
+            Player.CurrentHP = IPC.Get(Exchange, "CurrentHP", 1);
+            Player.CurrentMP = IPC.Get(Exchange, "CurrentMP", 0);
 
             return true;
         }
@@ -75,12 +75,12 @@ namespace CrystalEmu.Networking.IPC_Comms
             if (!await PingDB())
                 return null;
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\PlayerInfo.ini", "Character");
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Character");
 
             return new ServerInfo
             {
-                IP = await IPC.Get(Exchange, "ServerIP", "192.168.0.2"),
-                Port = await IPC.Get(Exchange, "ServerPort", 5816)
+                IP = IPC.Get(Exchange, "ServerIP", "192.168.0.2"),
+                Port = IPC.Get(Exchange, "ServerPort", 5816)
             };
         }
 
@@ -89,13 +89,13 @@ namespace CrystalEmu.Networking.IPC_Comms
             var Ping = new DataExchange(ExchangeType.Ping, "", "");
             try
             {
-                await Core.DbServerConnection.Execute(Ping);
+                Core.DbServerConnection.Execute(Ping);
                 return true;
             }
             catch
             {
                 await Open();
-                return await Core.DbServerConnection.Execute(Ping) != "";
+                return Core.DbServerConnection.Execute(Ping) != "";
             }
         }
     }

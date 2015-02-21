@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using CrystalEmu.Networking.Packets;
 using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib.Enums;
@@ -9,7 +8,7 @@ namespace CrystalEmu.Networking.Handlers
 {
     public static class MsgWalk
     {
-        public static async Task Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, byte[] Packet)
         {
             var UID = Packet.ToUInt(4);
             var Direction = (byte)(Packet[8] % 8);

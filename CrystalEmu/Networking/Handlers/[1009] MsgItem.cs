@@ -9,7 +9,7 @@ namespace CrystalEmu.Networking.Handlers
 {
     public static class MsgItem
     {
-        public static async Task Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, byte[] Packet)
         {
             var SubType = (MsgItemType)Packet[12];
 

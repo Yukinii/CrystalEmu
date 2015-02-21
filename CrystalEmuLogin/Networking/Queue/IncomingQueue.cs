@@ -12,7 +12,7 @@ namespace CrystalEmuLogin.Networking.Queue
 {
     public static class IncomingQueue
     {
-        private static async void Loop()
+        private static void Loop()
         {
             while (true)
             {
@@ -28,7 +28,7 @@ namespace CrystalEmuLogin.Networking.Queue
                     {
                         case PacketID.MsgConnect:
                         {
-                            await MsgConnect.Handle((Player)Pi.Owner, Pi.Packet);
+                            MsgConnect.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                     }

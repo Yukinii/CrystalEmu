@@ -10,19 +10,18 @@ namespace CrystalEmu.Networking.Packets
             if (Msg == null || From == null || To == null)
                 return null;
 
-            using (var P = new Packet(PacketID.MsgText, (ushort)(21 + From.Length + To.Length + Msg.Length)))
-            {
-                P.Write(0xFF0000);
-                P.Write((ushort)MsgTextType);
-                P.Write((short)0);
-                P.Write(UID);
-                P.Write((byte)4); //Unknown
-                P.Write(From, true);
-                P.Write(To, true);
-                P.Write((byte)0);
-                P.Write(Msg, true);
-                return P.Finish();
-            }
+            var P = new Packet(PacketID.MsgText, (ushort)(21 + From.Length + To.Length + Msg.Length));
+            P.Write(0xFF0000);
+            P.Write((ushort)MsgTextType);
+            P.Write((ushort)0);
+            P.Write(UID);
+            P.Write((byte)4); //Unknown
+            P.Write(From);
+            P.Write(To);
+            P.Write((byte)0);
+            P.Write(Msg);
+            return P.Finish();
+
         }
     }
 }

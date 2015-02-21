@@ -11,8 +11,6 @@ namespace CrystalEmuLib.Sockets
         public int RecvSize;
         public SocketEvent<YukiSocket, object> SocketCorrupt;
         public object Ref;
-        public Socket Connection { get; }
-        public ServerSocket Server { get; }
 
         public YukiSocket(ServerSocket Server, Socket Connection, int BufferSize)
         {
@@ -44,7 +42,7 @@ namespace CrystalEmuLib.Sockets
                     var Out = new byte[Packet.Length];
                     Crypto.Encrypt(Packet, Out, Out.Length);
                     if (Connection != null)
-                        await Task.Factory.FromAsync(Connection.BeginSend(Out, 0, Out.Length, SocketFlags.None, null, Connection), Connection.EndSend).ConfigureAwait(false);
+                       Task.Factory.FromAsync(Connection.BeginSend(Out, 0, Out.Length, SocketFlags.None, null, Connection), Connection.EndSend);
                 }
                 else
                 {
@@ -58,6 +56,10 @@ namespace CrystalEmuLib.Sockets
                 return false;
             }
         }
+
+        public Socket Connection { get; }
+
+        public ServerSocket Server { get; }
 
         public void SendClear(byte[] Packet) => Connection.Send(Packet);
     }

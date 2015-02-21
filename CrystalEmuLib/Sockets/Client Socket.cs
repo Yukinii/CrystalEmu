@@ -72,7 +72,6 @@ namespace CrystalEmuLib.Sockets
                     {
                         Buff = new byte[AsyncState.RecvSize];
                         AsyncState.Buffer.CopyTo(Buff, 0);
-                        //NativeMethods.memcpy(buff, asyncState.Buffa, asyncState.RecvSize);
                     }
                     OnReceive?.Invoke(this, Buff);
                     _Connection.BeginReceive(_Buffer, 0, _Buffer.Length, SocketFlags.None, AsyncReceive, null);

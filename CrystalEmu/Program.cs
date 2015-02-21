@@ -3,6 +3,7 @@ using CrystalEmu.Networking.IPC_Comms;
 using CrystalEmu.Networking.Queue;
 using CrystalEmu.Networking.Sockets;
 using CrystalEmuLib;
+using CrystalEmuLib.IPC_Comms.Database;
 
 namespace CrystalEmu
 {
@@ -15,6 +16,7 @@ namespace CrystalEmu
             {
                 Console.Write(".");
             }
+            DataExchangeOverLord.Initialize();
             IncomingQueue.Start();
             OutgoingQueue.Start();
             GameSocket.Open();

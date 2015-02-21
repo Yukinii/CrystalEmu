@@ -3,49 +3,78 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
-using System.Threading.Tasks;
 using System.Timers;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
 
 namespace CrystalEmuLib.IPC_Comms.Database
 {
-    [ServiceContract]
-    public interface IDataExchange
+    public static class DataExchangeOverLord
     {
-        [OperationContract]
-        Task<string> Execute(DataExchange De);
-    }
-
-    [Serializable]
-    public class DataExchange : IDataExchange
-    {
-        public readonly ConcurrentDictionary<string, IniFile> Cache = new ConcurrentDictionary<string, IniFile>(50, 100);
-        public readonly ConcurrentDictionary<string, IniFile> Cleanup = new ConcurrentDictionary<string, IniFile>(50, 100);
-        public static readonly Timer AutoFlushTimer = new Timer();
-        public ExchangeType EType;
-        public string Path;
-        public string Section;
-        public string Key;
-        public string Value;
-        public string Response;
-        public const string AccountDatabasePath = @"Y:\XioEmu\Database\Accounts\";
-
-        public DataExchange()
+        internal static readonly ConcurrentDictionary<string, IniFile> Cache = new ConcurrentDictionary<string, IniFile>(50, 100);
+        internal static readonly ConcurrentDictionary<string, IniFile> Cleanup = new ConcurrentDictionary<string, IniFile>(50, 100);
+        internal static readonly Timer AutoFlushTimer = new Timer();
+        public static void Initialize()
         {
             AutoFlushTimer.Elapsed += AutoFlushAutoFlushTimerElapsed;
             AutoFlushTimer.Interval = 10 * 1000;
             AutoFlushTimer.Start();
         }
 
-        public DataExchange(ExchangeType EType, string Path, string Section)
+        internal static IniFile CacheLookup(DataExchange De)
         {
-            this.EType = EType;
-            this.Path = Path;
-            this.Section = Section;
-        }
+            IniFile Writer;
+            //if (!De.Path.Contains(Core.AccountDatabasePath))
+            //    De.Path = De.Path.Insert(0, Core.AccountDatabasePath);
 
-        private void AutoFlushAutoFlushTimerElapsed(object Sender, ElapsedEventArgs E)
+            if (Cache.ContainsKey(De.Path))
+            {
+                Core.Write("#", ConsoleColor.Green);
+                Writer = Cache[De.Path];
+            }
+            else
+            {
+                Core.Write("#", ConsoleColor.Cyan);
+                Writer = new IniFile(De.Path);
+                Cache.TryAdd(De.Path, Writer);
+            }
+            return Writer;
+        }
+        internal static string Execute(DataExchange De)
+        {
+            if (De.Key == null || De.Path == null)
+                return null;
+
+            switch (De.EType)
+            {
+                case ExchangeType.SaveLocation:
+                    {
+                        var Writer = CacheLookup(De);
+                        Writer.Write(De.Section, "X", De.Key);
+                        Writer.Write(De.Section, "Y", De.Value);
+                        return null;
+                    }
+                case ExchangeType.LoadAccountValue:
+                    {
+                        var Reader = CacheLookup(De);
+                        De.Response = Reader.ReadString(De.Section, De.Key, "");
+                        De.EType = ExchangeType.Response;
+                        return De.Response;
+                    }
+                case ExchangeType.SaveAccountValue:
+                    {
+                        var Writer = CacheLookup(De);
+                        Writer.Write(De.Section, De.Key, De.Value);
+                        return null;
+                    }
+                case ExchangeType.GetUsernameByUID:
+                    {
+                        return Directory.GetFiles(Core.AccountDatabasePath, "AccountInfo.ini", SearchOption.AllDirectories).Select(PlayerInfo => new IniFile(PlayerInfo)).Where(Reader => Reader?.ReadString("Account", "UID", "") == De.Path).Select(Reader => De.Response = Reader?.ReadString("Account", "Username", "0")).FirstOrDefault();
+                    }
+            }
+            return null;
+        }
+        internal static void AutoFlushAutoFlushTimerElapsed(object Sender, ElapsedEventArgs E)
         {
             if (Cache == null)
                 return;
@@ -66,99 +95,36 @@ namespace CrystalEmuLib.IPC_Comms.Database
             }
             Cleanup.Clear();
         }
+    }
 
-        public async Task<string> Execute(DataExchange De)
+    [ServiceContract]
+    public interface IDataExchange
+    {
+        [OperationContract]
+        string Execute(DataExchange De);
+    }
+
+    [Serializable]
+    public class DataExchange : IDataExchange
+    {
+        public ExchangeType EType;
+        public string Path;
+        public string Key;
+        public string Value;
+        public string Response;
+        public readonly string Section;
+
+        public DataExchange()
         {
-            // ReSharper disable once ConvertToExpressionBodyWhenPossible
-            return await Task.Run(() =>
-            {
-                if (De?.Key == null || De.Path == null)
-                    return "";
-
-                switch (De.EType)
-                {
-                    case ExchangeType.SaveLocation:
-                    {
-                        if (!File.Exists(AccountDatabasePath + De.Path))
-                            return "fail";
-
-                        var Writer = CacheLookup(De);
-                        Writer.Write(De.Section, "X", De.Key);
-                        Writer.Write(De.Section, "Y", De.Value);
-                        Console.WriteLine("X -> " + De.Key + " on " + De.Path);
-                        Console.WriteLine("Y -> " + De.Value + " on " + De.Path);
-
-                        return "done";
-                    }
-                    case ExchangeType.LoadAccountValue:
-                    {
-                        if (!File.Exists(AccountDatabasePath + De.Path))
-                            return "";
-
-                        var Reader = CacheLookup(De);
-                        De.Response = Reader.ReadString(De.Section, De.Key, "");
-                        De.EType = ExchangeType.Response;
-                        Console.WriteLine(De.Key + " -> " + De.Response + " on " + De.Path);
-
-                        return De.Response;
-                    }
-                    case ExchangeType.SaveAccountValue:
-                    {
-                        if (!File.Exists(AccountDatabasePath + De.Path.Replace(AccountDatabasePath, "")))
-                            File.Create(AccountDatabasePath + De.Path.Replace(AccountDatabasePath, "")).Close();
-
-                        var Writer = CacheLookup(De);
-                        Writer.Write(De.Section, De.Key, De.Value);
-                        Console.WriteLine(De.Key + " -> " + De.Value + " on " + De.Path);
-
-                        return "done";
-                    }
-                    case ExchangeType.GetUsernameByUID:
-                    {
-                        var UID = De.Path;
-                        foreach (var Reader in Directory.GetFiles(AccountDatabasePath, "AccountInfo.ini", SearchOption.AllDirectories).Select(PlayerInfo => new IniFile(PlayerInfo)).Where(Reader => Reader?.ReadString("Account", "UID", "") == UID))
-                        {
-                            return De.Response = Reader?.ReadString("Account", "Username", "0");
-                        }
-                        return "0";
-                    }
-                }
-                return @"INVALID::ETYPE";
-            });
+            
+        }
+        public DataExchange(ExchangeType EType, string Path, string Section)
+        {
+            this.EType = EType;
+            this.Path = Path;
+            this.Section = Section;
         }
 
-        private IniFile CacheLookup(DataExchange De)
-        {
-            IniFile Writer;
-            if (!De.Path.Contains(AccountDatabasePath))
-                De.Path = De.Path.Insert(0, AccountDatabasePath);
-
-            if (Cache.ContainsKey(De.Path))
-            {
-                Core.WriteLine("Cached File Handle: " + De.Path, ConsoleColor.Green);
-                Writer = Cache[De.Path];
-            }
-            else
-            {
-                Core.WriteLine("New File Handle: " + De.Path, ConsoleColor.Cyan);
-                Writer = new IniFile(De.Path);
-                Cache.TryAdd(De.Path, Writer);
-            }
-            return Writer;
-        }
-
-        public DataExchange Clone()
-        {
-            var Copy = new DataExchange
-            {
-                EType = EType,
-                Key = Key,
-                Path = Path,
-                Response = Response,
-                Section = Section,
-                Value = Value
-            };
-            return Copy;
-        }
+        public string Execute(DataExchange De) => DataExchangeOverLord.Execute(De);
     }
 }

@@ -11,7 +11,7 @@ namespace CrystalEmuLogin.Networking.Handlers
 {
     public static class MsgConnect
     {
-        public static async Task Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, byte[] Packet)
         {
             Player.Username = Packet.StringFrom(4, 16);
             Player.Password = Rc5.Decrypt(Packet.ArrayFrom(20, 16));
@@ -19,9 +19,9 @@ namespace CrystalEmuLogin.Networking.Handlers
 
             Console.WriteLine("{0} : {1} -> {2}", Player.Username, Player.Password, Server);
 
-            if (await DatabaseConnection.Authenticate(Player))
+            if (DatabaseConnection.Authenticate(Player))
             {
-                Player.ServerInfo = await DatabaseConnection.FindServer(Player);
+                Player.ServerInfo = DatabaseConnection.FindServer(Player);
                 Player.Send(CoPacket.MsgTransfer(Player));
                 return;
             }

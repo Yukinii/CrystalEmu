@@ -8,8 +8,7 @@ namespace CrystalEmu.Networking.Packets
     {
         public static byte[] GeneralData(uint UID, uint Value1, ushort Value2, ushort Value3, MsgActionType Type)
         {
-            using (var P = new Packet(PacketID.MsgAction, 24))
-            {
+            var P = new Packet(PacketID.MsgAction, 24);
                 P.Write(Environment.TickCount);
                 P.Write(UID);
                 P.Write(Value1);
@@ -18,7 +17,6 @@ namespace CrystalEmu.Networking.Packets
                 P.Write((ushort)0);
                 P.Write((short)Type);
                 return P.Finish();
-            }
         }
     }
 }

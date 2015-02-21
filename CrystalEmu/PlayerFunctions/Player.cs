@@ -11,6 +11,35 @@ namespace CrystalEmu.PlayerFunctions
 {
     public class Player
     {
+        #region private
+
+        private string _Name = "ERROR";
+        private string _Spouse = "None";
+        private byte _Stamina;
+        private byte _XpTimer;
+        private byte _Level;
+        private byte _Direction;
+        private byte _Class;
+        private ushort _PkPoints;
+        private uint _Model;
+        private ushort _Hair;
+        private uint _Money;
+        private uint _Cps;
+        private uint _Exp;
+        private ushort _Strength;
+        private ushort _Agility;
+        private ushort _Vitality;
+        private ushort _Spirit;
+        private ushort _AttributePoints;
+        private uint _CurrentHP;
+        private uint _CurrentMP;
+        private int _X;
+        private int _Y;
+        private int _Z;
+        private uint _MaximumHP;
+        private uint _MaximumMP;
+
+        #endregion
         public readonly YukiSocket Socket;
         public readonly ServerInfo ServerInfo;
         public DataExchange LoadExchange;
@@ -46,8 +75,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Stamina = value;
-                IPC.Set(SaveExchange, "Stamina", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Stamina));
+                IPC.Set(SaveExchange, "Stamina", value);
             }
         }
 
@@ -57,8 +86,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _XpTimer = value;
-                IPC.Set(SaveExchange, "XpTimer", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.XpTimer));
+                IPC.Set(SaveExchange, "XpTimer", value);
             }
         }
 
@@ -68,8 +97,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Level = value;
-                IPC.Set(SaveExchange, "Level", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Level));
+                IPC.Set(SaveExchange, "Level", value);
             }
         }
 
@@ -79,8 +108,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Class = value;
-                IPC.Set(SaveExchange, "Class", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Job));
+                IPC.Set(SaveExchange, "Class", value);
             }
         }
 
@@ -166,8 +195,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Strength = value;
-                IPC.Set(SaveExchange, "Strength", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.StrengthStatPoints));
+                IPC.Set(SaveExchange, "Strength", value);
             }
         }
 
@@ -177,8 +206,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Agility = value;
-                IPC.Set(SaveExchange, "Agility", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.DexterityStatPoints));
+                IPC.Set(SaveExchange, "Agility", value);
             }
         }
 
@@ -188,8 +217,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Vitality = value;
-                IPC.Set(SaveExchange, "Vitality", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.VitalityStatPoints));
+                IPC.Set(SaveExchange, "Vitality", value);
             }
         }
 
@@ -199,8 +228,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _Spirit = value;
-                IPC.Set(SaveExchange, "Spirit", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.ManaStatPoints));
+                IPC.Set(SaveExchange, "Spirit", value);
             }
         }
 
@@ -210,8 +239,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _AttributePoints = value;
-                IPC.Set(SaveExchange, "AttributePoints", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.AttributePoints));
+                IPC.Set(SaveExchange, "AttributePoints", value);
             }
         }
 
@@ -221,8 +250,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _MaximumHP = value;
-                IPC.Set(SaveExchange, "MaximumHP", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.MaxHP));
+                IPC.Set(SaveExchange, "MaximumHP", value);
             }
         }
 
@@ -232,8 +261,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _MaximumMP = value;
-                IPC.Set(SaveExchange, "MaximumMP", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.MaxMana));
+                IPC.Set(SaveExchange, "MaximumMP", value);
             }
         }
 
@@ -243,8 +272,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _CurrentHP = value;
-                IPC.Set(SaveExchange, "CurrentHP", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Hp));
+                IPC.Set(SaveExchange, "CurrentHP", value);
             }
         }
 
@@ -254,8 +283,8 @@ namespace CrystalEmu.PlayerFunctions
             set
             {
                 _CurrentMP = value;
-                IPC.Set(SaveExchange, "CurrentMP", value);
                 Send(CoPacket.MsgUpdate(UID, value, MsgUpdateType.Mp));
+                IPC.Set(SaveExchange, "CurrentMP", value);
             }
         }
 
@@ -288,46 +317,15 @@ namespace CrystalEmu.PlayerFunctions
                 IPC.Set(SaveExchange, "Z", value);
             }
         }
-
         public Player(YukiSocket YukiSocket)
         {
             ServerInfo = new ServerInfo {IP = "192.168.0.2", Port = 5816};
             Socket = YukiSocket;
         }
-
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
         public async Task ForceSend(byte[] Packet) => await Socket.Send(Packet);
         public void Disconnect() => Socket.Disconnect();
 
-        #region private
-
-        private string _Name = "ERROR";
-        private string _Spouse = "None";
-        private byte _Stamina;
-        private byte _XpTimer;
-        private byte _Level;
-        private byte _Direction;
-        private byte _Class;
-        private ushort _PkPoints;
-        private uint _Model;
-        private ushort _Hair;
-        private uint _Money;
-        private uint _Cps;
-        private uint _Exp;
-        private ushort _Strength;
-        private ushort _Agility;
-        private ushort _Vitality;
-        private ushort _Spirit;
-        private ushort _AttributePoints;
-        private uint _CurrentHP;
-        private uint _CurrentMP;
-        private int _X;
-        private int _Y;
-        private int _Z;
-        private uint _MaximumHP;
-        private uint _MaximumMP;
-
-        #endregion
     }
 }
