@@ -28,7 +28,6 @@ namespace CrystalEmu.Networking.Handlers
             if (!VerifyVersion(Player, Version))
                 Player.Disconnect();
 
-            await Player.InitializeDatabaseConnection();
             (Player.Socket.Crypto as ConquerStanderedCipher)?.SetKeys(ServerKey, Player.UID);
             Player.Send(CoPacket.MsgText(Player.UID, "SYSTEM", "ALLUSERS", "ANSWER_OK", MsgTextType.LoginInformation));
             Player.Send(CoPacket.MsgHero(Player));

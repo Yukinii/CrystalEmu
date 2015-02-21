@@ -3,9 +3,9 @@
     public class ConquerStanderedCipher : IPacketAuthCipher
     {
         private ushort _InCounter;
-        private ushort _OutCounter;
         private byte[] _Key3;
         private byte[] _Key4;
+        private ushort _OutCounter;
         private bool _Server;
 
         public ConquerStanderedCipher()

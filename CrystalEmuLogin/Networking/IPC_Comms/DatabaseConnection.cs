@@ -3,6 +3,7 @@ using System.IO;
 using System.ServiceModel;
 using System.Threading.Tasks;
 using CrystalEmuLib;
+using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
 using CrystalEmuLib.IPC_Comms.Shared;
 using CrystalEmuLogin.PlayerFunctions;
@@ -12,6 +13,21 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
     public static class DatabaseConnection
     {
         public static bool ConnectionOpen;
+        private static uint _LastUI;
+
+        private static uint LastUID
+        {
+            get
+            {
+                _LastUI = uint.Parse(File.ReadAllText(@"Y:\XioEmu\Database\UIDs.txt"));
+                return _LastUI;
+            }
+            set
+            {
+                File.WriteAllText(@"Y:\XioEmu\Database\UIDs.txt", Convert.ToString(value));
+                _LastUI = value;
+            }
+        }
 
         public static void Open()
         {
@@ -111,22 +127,6 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 }
             }
             return false;
-        }
-
-        private static uint _LastUI;
-
-        private static uint LastUID
-        {
-            get
-            {
-                _LastUI = uint.Parse(File.ReadAllText(@"Y:\XioEmu\Database\UIDs.txt"));
-                return _LastUI;
-            }
-            set
-            {
-                File.WriteAllText(@"Y:\XioEmu\Database\UIDs.txt", Convert.ToString(value));
-                _LastUI = value;
-            }
         }
     }
 }

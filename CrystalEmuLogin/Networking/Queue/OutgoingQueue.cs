@@ -10,10 +10,6 @@ namespace CrystalEmuLogin.Networking.Queue
 {
     public static class OutgoingQueue
     {
-        public static readonly ConcurrentQueue<PacketInfo> Packets = new ConcurrentQueue<PacketInfo>();
-        public static readonly Thread ConsumerThread = new Thread(Loop);
-        public static readonly AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
-
         private static async void Loop()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
@@ -55,5 +51,9 @@ namespace CrystalEmuLogin.Networking.Queue
             ConsumerThread.Start();
             Core.WriteLine("Outgoing PacketQueue started!", ConsoleColor.Green);
         }
+
+        public static readonly ConcurrentQueue<PacketInfo> Packets = new ConcurrentQueue<PacketInfo>();
+        public static readonly Thread ConsumerThread = new Thread(Loop);
+        public static readonly AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
     }
 }

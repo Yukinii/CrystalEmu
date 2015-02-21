@@ -6,9 +6,9 @@ namespace CrystalEmuLib.Networking.Packets
 {
     public class Packet : IDisposable
     {
+        private readonly byte[] _Buffer;
         private readonly MemoryStream _Stream;
         private readonly BinaryWriter _Writer;
-        private readonly byte[] _Buffer;
 
         public Packet(PacketID ID, int Size)
         {
@@ -17,6 +17,16 @@ namespace CrystalEmuLib.Networking.Packets
             _Writer = new BinaryWriter(_Stream);
             _Writer.Write((ushort)Size);
             _Writer.Write((ushort)ID);
+        }
+
+        public void Dispose()
+        {
+            _Writer?.Flush();
+            _Stream?.Flush();
+            _Stream?.Close();
+            _Writer?.Close();
+            _Stream?.Dispose();
+            _Writer?.Dispose();
         }
 
         public void Write(byte Value, int Offset = - 1)
@@ -99,15 +109,5 @@ namespace CrystalEmuLib.Networking.Packets
         }
 
         public byte[] Finish() => _Buffer;
-
-        public void Dispose()
-        {
-            _Writer?.Flush();
-            _Stream?.Flush();
-            _Stream?.Close();
-            _Writer?.Close();
-            _Stream?.Dispose();
-            _Writer?.Dispose();
-        }
     }
 }

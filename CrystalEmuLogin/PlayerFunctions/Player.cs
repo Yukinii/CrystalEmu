@@ -8,7 +8,6 @@ namespace CrystalEmuLogin.PlayerFunctions
     public class Player
     {
         public readonly YukiSocket Socket;
-
         public uint UID;
         public string Username = "";
         public string Password = "";
@@ -20,9 +19,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         }
 
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
-
         public async Task ForceSend(byte[] Packet) => await Socket.Send(Packet);
-
         public void Disconnect() => Socket.Disconnect();
     }
 }

@@ -10,10 +10,17 @@ namespace CrystalEmuLib.IPC_Comms.Database
 {
     public class IniFile
     {
+        public double ReadDouble(string SectionName, string Key, double DefaultValue = 0)
+        {
+            var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
+            double Value;
+            return double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
+        }
+
         #region "Declarations"
 
         private string _FileName;
-        private bool _CacheModified;
+        public bool CacheModified;
 
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Sections = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
         private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, string>> _Modified = new ConcurrentDictionary<string, ConcurrentDictionary<string, string>>();
@@ -108,9 +115,9 @@ namespace CrystalEmuLib.IPC_Comms.Database
         {
             try
             {
-                if (!_CacheModified)
+                if (!CacheModified)
                     return;
-                _CacheModified = false;
+                CacheModified = false;
                 var OriginalFileExists = File.Exists(_FileName);
                 var TmpFileName = Path.ChangeExtension(_FileName, "$n$");
                 if (!Directory.Exists(Path.GetDirectoryName(TmpFileName)))
@@ -207,7 +214,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                         }
                         finally
                         {
-                            Sr.Close();
+                            Sr?.Close();
                         }
                     }
 
@@ -236,7 +243,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
                 }
                 finally
                 {
-                    Sw.Close();
+                    Sw?.Close();
                 }
             }
             catch (Exception E)
@@ -268,7 +275,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
 
         public async void Write(string SectionName, string Key, object Value)
         {
-            _CacheModified = true;
+            CacheModified = true;
 
             ConcurrentDictionary<string, string> Section;
             if (!_Sections.TryGetValue(SectionName, out Section))
@@ -346,12 +353,5 @@ namespace CrystalEmuLib.IPC_Comms.Database
         public void SetValue(string SectionName, string Key, DateTime Value) => Write(SectionName, Key, Value.ToString(CultureInfo.InvariantCulture));
 
         #endregion
-
-        public double ReadDouble(string SectionName, string Key, double DefaultValue = 0)
-        {
-            var StringValue = ReadString(SectionName, Key, DefaultValue.ToString(CultureInfo.InvariantCulture));
-            double Value;
-            return double.TryParse(StringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out Value) ? Value : DefaultValue;
-        }
     }
 }

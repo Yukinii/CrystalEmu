@@ -80,9 +80,9 @@ namespace CrystalEmu.Networking.Handlers
         {
             Kernel.Players.TryAdd(Player.UID, Player);
 
+            await DatabaseConnection.LoadCharacer(Player);
             if (await DatabaseConnection.FindSpawnPoint(Player))
             {
-                await DatabaseConnection.LoadCharacer(Player);
                 Player.Send(CoPacket.MsgHero(Player));
                 Player.Send(CoPacket.GeneralData(Player.UID, (ushort)Player.Z, (ushort)Player.X, (ushort)Player.Y, MsgActionType.MapShow));
             }

@@ -53,6 +53,7 @@
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\ConcurrentDictionaryExtensions.cs" />
     <Compile Include="IPC Comms\Database\DataExchange.cs" />
+    <Compile Include="Enums\ExchangeType.cs" />
     <Compile Include="IPC Comms\Database\IniFile.cs" />
     <Compile Include="IPC Comms\Shared\IPC.cs" />
     <Compile Include="IPC Comms\Shared\ServerInfo.cs" />

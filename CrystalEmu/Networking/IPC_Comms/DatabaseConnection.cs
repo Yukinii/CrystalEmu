@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib;
+using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
 using CrystalEmuLib.IPC_Comms.Shared;
 
@@ -48,9 +49,14 @@ namespace CrystalEmu.Networking.IPC_Comms
         {
             if (!await PingDB())
                 return false;
+            var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
+            Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
 
             var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Player.Username + "\\PlayerInfo.ini", "Character");
             Player.Name = await IPC.Get(Exchange, "Name", "ERROR");
+
+            Player.InitializeDatabaseConnection();
+
             Player.Spouse = await IPC.Get(Exchange, "Spouse", "None");
             Player.Model = await IPC.Get(Exchange, "Model", 1003);
             Player.Hair = await IPC.Get(Exchange, "Hair", 1);

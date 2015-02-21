@@ -7,20 +7,54 @@ namespace CrystalEmuLib.Sockets
     {
         private byte[] _Buffer;
         private Socket _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        protected IPacketAuthCipher Crypto;
         private bool _Enabled;
+        private string _Remoteip;
+        private ushort _Remoteport;
         public SocketEvent<ClientSocket, object> OnConnect;
         public SocketEvent<ClientSocket, object> OnConnecting;
         public SocketEvent<ClientSocket, object> OnDisconnect;
         public SocketEvent<ClientSocket, SocketError> OnError;
         public SocketEvent<ClientSocket, byte[]> OnReceive;
-        private string _Remoteip;
-        private ushort _Remoteport;
+
+        public int BufferSize
+        {
+            get { return _Buffer.Length; }
+            set
+            {
+                EnabledCheck("BufferSize");
+                _Buffer = new byte[value];
+            }
+        }
+
+        public Socket Connection => _Connection;
+        public bool Enabled => _Enabled;
+
+        public string RemoteIP
+        {
+            get { return _Remoteip; }
+            set
+            {
+                EnabledCheck("RemoteIP");
+                _Remoteip = value;
+            }
+        }
+
+        public ushort RemotePort
+        {
+            get { return _Remoteport; }
+            set
+            {
+                EnabledCheck("RemotePort");
+                _Remoteport = value;
+            }
+        }
 
         protected ClientSocket()
         {
             BufferSize = 0xffff;
         }
+
+        protected IPacketAuthCipher Crypto;
 
         private void AsyncReceive(IAsyncResult Res)
         {
@@ -109,40 +143,6 @@ namespace CrystalEmuLib.Sockets
             }
             else
                 _Connection.Send(Bytes);
-        }
-
-        public int BufferSize
-        {
-            get { return _Buffer.Length; }
-            set
-            {
-                EnabledCheck("BufferSize");
-                _Buffer = new byte[value];
-            }
-        }
-
-        public Socket Connection => _Connection;
-
-        public bool Enabled => _Enabled;
-
-        public string RemoteIP
-        {
-            get { return _Remoteip; }
-            set
-            {
-                EnabledCheck("RemoteIP");
-                _Remoteip = value;
-            }
-        }
-
-        public ushort RemotePort
-        {
-            get { return _Remoteport; }
-            set
-            {
-                EnabledCheck("RemotePort");
-                _Remoteport = value;
-            }
         }
     }
 }

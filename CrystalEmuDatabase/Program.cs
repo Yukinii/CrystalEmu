@@ -20,7 +20,6 @@ namespace CrystalEmuDatabase
         }
 
         private static void DataExchangeHostClosed(object Sender, EventArgs E) => CreateService();
-
         private static void DataExchangeHostFaulted(object Sender, EventArgs E) => CreateService();
 
         private static void CreateService()

@@ -6,15 +6,47 @@ namespace CrystalEmuLib.Sockets
 {
     public abstract class ServerSocket
     {
+        private readonly Socket _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private int _Backlog;
         private int _Clientbuffersize = 0xffff;
-        private readonly Socket _Connection = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private bool _Enabled;
+        private ushort _Port;
         public SocketEvent<YukiSocket, object> OnClientConnect;
         public SocketEvent<YukiSocket, object> OnClientDisconnect;
         public SocketEvent<YukiSocket, SocketError> OnClientError;
         public SocketEvent<YukiSocket, byte[]> OnClientReceive;
-        private ushort _Port;
+
+        public int Backlog
+        {
+            get { return _Backlog; }
+            set
+            {
+                EnabledCheck("Backlog");
+                _Backlog = value;
+            }
+        }
+
+        public int ClientBufferSize
+        {
+            get { return _Clientbuffersize; }
+            set
+            {
+                EnabledCheck("ClientBufferSize");
+                _Clientbuffersize = value;
+            }
+        }
+
+        public bool Enabled => _Enabled;
+
+        public ushort Port
+        {
+            get { return _Port; }
+            set
+            {
+                EnabledCheck("Port");
+                _Port = value;
+            }
+        }
 
         private void AsyncConnect(IAsyncResult Res)
         {
@@ -112,37 +144,5 @@ namespace CrystalEmuLib.Sockets
         }
 
         protected abstract IPacketAuthCipher MakeCrypto();
-
-        public int Backlog
-        {
-            get { return _Backlog; }
-            set
-            {
-                EnabledCheck("Backlog");
-                _Backlog = value;
-            }
-        }
-
-        public int ClientBufferSize
-        {
-            get { return _Clientbuffersize; }
-            set
-            {
-                EnabledCheck("ClientBufferSize");
-                _Clientbuffersize = value;
-            }
-        }
-
-        public bool Enabled => _Enabled;
-
-        public ushort Port
-        {
-            get { return _Port; }
-            set
-            {
-                EnabledCheck("Port");
-                _Port = value;
-            }
-        }
     }
 }

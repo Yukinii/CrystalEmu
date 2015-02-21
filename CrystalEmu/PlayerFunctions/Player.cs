@@ -11,36 +11,6 @@ namespace CrystalEmu.PlayerFunctions
 {
     public class Player
     {
-        #region private
-
-        private string _Name = "ERROR";
-        private string _Spouse = "None";
-        private byte _Stamina;
-        private byte _XpTimer;
-        private byte _Level;
-        private byte _Direction;
-        private byte _Class;
-        private ushort _PkPoints;
-        private uint _Model;
-        private ushort _Hair;
-        private uint _Money;
-        private uint _Cps;
-        private uint _Exp;
-        private ushort _Strength;
-        private ushort _Agility;
-        private ushort _Vitality;
-        private ushort _Spirit;
-        private ushort _AttributePoints;
-        private uint _CurrentHP;
-        private uint _CurrentMP;
-        private int _X;
-        private int _Y;
-        private int _Z;
-        private uint _MaximumHP;
-        private uint _MaximumMP;
-
-        #endregion
-
         public readonly YukiSocket Socket;
         public readonly ServerInfo ServerInfo;
         public DataExchange LoadExchange;
@@ -49,19 +19,6 @@ namespace CrystalEmu.PlayerFunctions
         public string Username;
         public uint LastJump;
         public int LastWalk;
-
-        public Player(YukiSocket YukiSocket)
-        {
-            ServerInfo = new ServerInfo {IP = "192.168.0.2", Port = 5816};
-            Socket = YukiSocket;
-        }
-
-        public async Task InitializeDatabaseConnection()
-        {
-            var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, UID.ToString(), "");
-            Username = await IPC.Get(TempExchange, UID.ToString(), "0");
-            SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
-        }
 
         public string Name
         {
@@ -332,10 +289,45 @@ namespace CrystalEmu.PlayerFunctions
             }
         }
 
+        public Player(YukiSocket YukiSocket)
+        {
+            ServerInfo = new ServerInfo {IP = "192.168.0.2", Port = 5816};
+            Socket = YukiSocket;
+        }
 
+        public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
         public async Task ForceSend(byte[] Packet) => await Socket.Send(Packet);
-
         public void Disconnect() => Socket.Disconnect();
+
+        #region private
+
+        private string _Name = "ERROR";
+        private string _Spouse = "None";
+        private byte _Stamina;
+        private byte _XpTimer;
+        private byte _Level;
+        private byte _Direction;
+        private byte _Class;
+        private ushort _PkPoints;
+        private uint _Model;
+        private ushort _Hair;
+        private uint _Money;
+        private uint _Cps;
+        private uint _Exp;
+        private ushort _Strength;
+        private ushort _Agility;
+        private ushort _Vitality;
+        private ushort _Spirit;
+        private ushort _AttributePoints;
+        private uint _CurrentHP;
+        private uint _CurrentMP;
+        private int _X;
+        private int _Y;
+        private int _Z;
+        private uint _MaximumHP;
+        private uint _MaximumMP;
+
+        #endregion
     }
 }
