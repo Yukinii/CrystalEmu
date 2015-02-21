@@ -1,13 +1,12 @@
 ﻿using System;
-using CrystalEmu.CoreSystems;
-using CrystalEmu.Networking.IPC_Comms;
-using CrystalEmu.Networking.Packets;
-using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
+using CrystalEmuLogin.Networking.IPC_Comms;
+using CrystalEmuLogin.Networking.Packets;
+using CrystalEmuLogin.PlayerFunctions;
 
-namespace CrystalEmu.Networking.Handlers
+namespace CrystalEmuLogin.Networking.Handlers
 {
     public static class MsgAction
     {
@@ -23,10 +22,6 @@ namespace CrystalEmu.Networking.Handlers
                     break;
                 }
                 case MsgActionType.Jump:
-                {
-                    ProcessJump(Player, Packet);
-                    break;
-                }
                 case MsgActionType.Action:
                 case MsgActionType.ChangeDirection:
                 case MsgActionType.ChangeFace:
@@ -87,28 +82,6 @@ namespace CrystalEmu.Networking.Handlers
             }
             else
                 Player.Disconnect();
-        }
-
-        private static void ProcessJump(Player Player, byte[] Packet)
-        {
-            var Timestamp = Packet.ToUInt(4);
-            var UID = Packet.ToUInt(8);
-            var X = Packet.ToUShort(12);
-            var Y = Packet.ToUShort(14);
-            var CurrentX = Packet.ToUShort(16);
-            var CurrentY = Packet.ToUShort(18);
-
-            if (Player.UID != UID)
-                Player.Disconnect();
-            if (Player.X != CurrentX || Player.Y != CurrentY)
-                Player.Disconnect();
-            if (Player.LastJump + 300 > Timestamp)
-                Player.Disconnect();
-
-            Player.LastJump = Timestamp;
-            Player.X = X;
-            Player.Y = Y;
-            Player.Direction = 0;
         }
     }
 }

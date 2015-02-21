@@ -1,10 +1,10 @@
 ﻿using System;
-using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
+using CrystalEmuLogin.PlayerFunctions;
 
-namespace CrystalEmu.Networking.Handlers
+namespace CrystalEmuLogin.Networking.Handlers
 {
     public static class MsgItem
     {

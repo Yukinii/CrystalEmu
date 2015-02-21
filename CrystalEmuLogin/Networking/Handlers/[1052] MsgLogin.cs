@@ -1,12 +1,12 @@
 ﻿using System;
-using CrystalEmu.Networking.Packets;
-using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Sockets;
+using CrystalEmuLogin.Networking.Packets;
+using CrystalEmuLogin.PlayerFunctions;
 
-namespace CrystalEmu.Networking.Handlers
+namespace CrystalEmuLogin.Networking.Handlers
 {
     public static class MsgLogin
     {

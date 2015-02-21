@@ -14,9 +14,8 @@ namespace CrystalEmuLogin.Networking.Queue
         public static readonly Thread ConsumerThread = new Thread(Loop);
         public static readonly AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
 
-        private static async void Loop()
+        private static void Loop()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
             while (true)
             {
                 AutoResetEvent.WaitOne(10);
@@ -27,7 +26,7 @@ namespace CrystalEmuLogin.Networking.Queue
                     if (!Packets.TryDequeue(out Pi))
                         break;
 
-                    await ((Player)Pi.Owner).ForceSend(Pi.Packet).ConfigureAwait(false);
+                    ((Player)Pi.Owner).ForceSend(Pi.Packet);
                 }
             }
         }

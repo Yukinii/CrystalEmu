@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using System.Threading.Tasks;
 
 namespace CrystalEmuLib.Sockets
 {
@@ -33,7 +32,7 @@ namespace CrystalEmuLib.Sockets
             }
         }
 
-        public async Task<bool> Send(byte[] Packet)
+        public bool Send(byte[] Packet)
         {
             try
             {
@@ -41,13 +40,11 @@ namespace CrystalEmuLib.Sockets
                 {
                     var Out = new byte[Packet.Length];
                     Crypto.Encrypt(Packet, Out, Out.Length);
-                    if (Connection != null)
-                       Task.Factory.FromAsync(Connection.BeginSend(Out, 0, Out.Length, SocketFlags.None, null, Connection), Connection.EndSend);
+                    Connection?.Send(Out);
                 }
                 else
                 {
-                    if (Connection != null)
-                        await Task.Factory.FromAsync(Connection.BeginSend(Packet, 0, Packet.Length, SocketFlags.None, null, Connection), Connection.EndSend).ConfigureAwait(false);
+                    Connection?.Send(Packet);
                 }
                 return true;
             }

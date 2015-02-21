@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using CrystalEmuLib;
 using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Sockets;
@@ -11,7 +10,7 @@ namespace CrystalEmuLogin.Networking.Handlers
 {
     public static class MsgConnect
     {
-        public static void Handle(Player Player, byte[] Packet)
+        public static async void Handle(Player Player, byte[] Packet)
         {
             Player.Username = Packet.StringFrom(4, 16);
             Player.Password = Rc5.Decrypt(Packet.ArrayFrom(20, 16));
@@ -19,9 +18,9 @@ namespace CrystalEmuLogin.Networking.Handlers
 
             Console.WriteLine("{0} : {1} -> {2}", Player.Username, Player.Password, Server);
 
-            if (DatabaseConnection.Authenticate(Player))
+            if (await DatabaseConnection.Authenticate(Player))
             {
-                Player.ServerInfo = DatabaseConnection.FindServer(Player);
+                Player.ServerInfo = await DatabaseConnection.FindServer(Player);
                 Player.Send(CoPacket.MsgTransfer(Player));
                 return;
             }

@@ -324,7 +324,7 @@ namespace CrystalEmu.PlayerFunctions
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
-        public async Task ForceSend(byte[] Packet) => await Socket.Send(Packet);
+        public void ForceSend(byte[] Packet) => Socket.Send(Packet);
         public void Disconnect() => Socket.Disconnect();
 
     }

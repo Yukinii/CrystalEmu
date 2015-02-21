@@ -2,7 +2,7 @@
 
 namespace CrystalEmuLib.Networking.Packets
 {
-    public class PacketInfo
+    public struct PacketInfo
     {
         public Object Owner;
         public byte[] Packet;

@@ -52,8 +52,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Kernel.cs" />
+    <Compile Include="Networking\Handlers\[1009] MsgItem.cs" />
+    <Compile Include="Networking\Handlers\MsgAction.cs" />
     <Compile Include="Networking\Handlers\[1051] MsgConnect.cs" />
+    <Compile Include="Networking\Handlers\[1052] MsgLogin.cs" />
     <Compile Include="Networking\IPC_Comms\DatabaseConnection.cs" />
+    <Compile Include="Networking\Packets\[1004] MsgText.cs" />
+    <Compile Include="Networking\Packets\[1006] MsgHero.cs" />
+    <Compile Include="Networking\Packets\[1009] MsgItem.cs" />
+    <Compile Include="Networking\Packets\[1010] MsgAction.cs" />
+    <Compile Include="Networking\Packets\[1017] MsgUpdate.cs" />
     <Compile Include="Networking\Packets\[1055] MsgTransfer.cs" />
     <Compile Include="Networking\Queue\OutgoingQueue.cs" />
     <Compile Include="Networking\Queue\IncomingQueue.cs" />

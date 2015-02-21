@@ -27,7 +27,7 @@ namespace CrystalEmu.Networking.Queue
                     if (!Packets.TryDequeue(out Pi))
                         break;
 
-                    await ((Player)Pi.Owner).ForceSend(Pi.Packet).ConfigureAwait(false);
+                    ((Player)Pi.Owner).ForceSend(Pi.Packet);
                 }
             }
         }

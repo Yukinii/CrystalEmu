@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using System.Timers;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
@@ -11,6 +12,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
 {
     public static class DataExchangeOverLord
     {
+        internal static volatile bool Initialized = false;
         internal static readonly ConcurrentDictionary<string, IniFile> Cache = new ConcurrentDictionary<string, IniFile>(50, 100);
         internal static readonly ConcurrentDictionary<string, IniFile> Cleanup = new ConcurrentDictionary<string, IniFile>(50, 100);
         internal static readonly Timer AutoFlushTimer = new Timer();
@@ -19,60 +21,66 @@ namespace CrystalEmuLib.IPC_Comms.Database
             AutoFlushTimer.Elapsed += AutoFlushAutoFlushTimerElapsed;
             AutoFlushTimer.Interval = 10 * 1000;
             AutoFlushTimer.Start();
+            Initialized = true;
         }
 
         internal static IniFile CacheLookup(DataExchange De)
         {
-            IniFile Writer;
-            //if (!De.Path.Contains(Core.AccountDatabasePath))
-            //    De.Path = De.Path.Insert(0, Core.AccountDatabasePath);
+            if (!Initialized)
+                Initialize();
 
-            if (Cache.ContainsKey(De.Path))
+            IniFile Writer;
+            if (Cache.TryGetValue(De.Path, out Writer))
             {
                 Core.Write("#", ConsoleColor.Green);
-                Writer = Cache[De.Path];
             }
             else
             {
-                Core.Write("#", ConsoleColor.Cyan);
+                Core.Write("#", ConsoleColor.Red);
                 Writer = new IniFile(De.Path);
                 Cache.TryAdd(De.Path, Writer);
             }
             return Writer;
         }
-        internal static string Execute(DataExchange De)
+        internal static Task<string> Execute(DataExchange De)
         {
-            if (De.Key == null || De.Path == null)
-                return null;
+            var Tcs = new TaskCompletionSource<string>();
 
             switch (De.EType)
             {
                 case ExchangeType.SaveLocation:
-                    {
-                        var Writer = CacheLookup(De);
-                        Writer.Write(De.Section, "X", De.Key);
-                        Writer.Write(De.Section, "Y", De.Value);
-                        return null;
-                    }
+                {
+                    var Writer = CacheLookup(De);
+                    Writer.Write(De.Section, "X", De.Key);
+                    Writer.Write(De.Section, "Y", De.Value);
+                    Tcs.SetResult(null);
+                    break;
+                }
                 case ExchangeType.LoadAccountValue:
-                    {
-                        var Reader = CacheLookup(De);
-                        De.Response = Reader.ReadString(De.Section, De.Key, "");
-                        De.EType = ExchangeType.Response;
-                        return De.Response;
-                    }
+                {
+                    var Reader = CacheLookup(De);
+                    De.Response = Reader.ReadString(De.Section, De.Key, "");
+                    Tcs.SetResult(De.Response);
+                    break;
+                }
                 case ExchangeType.SaveAccountValue:
-                    {
-                        var Writer = CacheLookup(De);
-                        Writer.Write(De.Section, De.Key, De.Value);
-                        return null;
-                    }
+                {
+                    var Writer = CacheLookup(De);
+                    Writer.Write(De.Section, De.Key, De.Value);
+                    Tcs.SetResult(null);
+                    break;
+                }
                 case ExchangeType.GetUsernameByUID:
-                    {
-                        return Directory.GetFiles(Core.AccountDatabasePath, "AccountInfo.ini", SearchOption.AllDirectories).Select(PlayerInfo => new IniFile(PlayerInfo)).Where(Reader => Reader?.ReadString("Account", "UID", "") == De.Path).Select(Reader => De.Response = Reader?.ReadString("Account", "Username", "0")).FirstOrDefault();
-                    }
+                {
+                    Tcs.SetResult(Directory.GetFiles(Core.AccountDatabasePath, "AccountInfo.ini", SearchOption.AllDirectories).Select(PlayerInfo => new IniFile(PlayerInfo)).Where(Reader => Reader?.ReadString("Account", "UID", "") == De.Path).Select(Reader => De.Response = Reader?.ReadString("Account", "Username", "0")).FirstOrDefault());break;
+                }
+                default:
+                {
+                    Tcs.SetResult(null);
+                    break;
+                }
             }
-            return null;
+            return Tcs.Task;
         }
         internal static void AutoFlushAutoFlushTimerElapsed(object Sender, ElapsedEventArgs E)
         {
@@ -101,7 +109,7 @@ namespace CrystalEmuLib.IPC_Comms.Database
     public interface IDataExchange
     {
         [OperationContract]
-        string Execute(DataExchange De);
+        Task<string> Execute(DataExchange De);
     }
 
     [Serializable]
@@ -124,7 +132,6 @@ namespace CrystalEmuLib.IPC_Comms.Database
             this.Path = Path;
             this.Section = Section;
         }
-
-        public string Execute(DataExchange De) => DataExchangeOverLord.Execute(De);
+        public async Task<string> Execute(DataExchange De) => await DataExchangeOverLord.Execute(De);
     }
 }

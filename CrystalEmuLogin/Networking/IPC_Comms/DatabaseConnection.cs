@@ -14,7 +14,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
     {
         public static bool ConnectionOpen;
 
-        public static void Open()
+        public static async Task<bool> Open()
         {
             try
             {
@@ -22,22 +22,22 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 var PipeFactory = new ChannelFactory<IDataExchange>(new NetTcpBinding(), new EndpointAddress("net.tcp://192.168.0.2/Database"));
                 Core.DbServerConnection = PipeFactory.CreateChannel();
 
-                if (!PingDB())
-                    return;
+                if (!await PingDB())
+                    return false;
 
-                ConnectionOpen = true;
                 Core.WriteLine(" [Success]", ConsoleColor.Green);
+                return true;
             }
-            catch (Exception)
+            catch
             {
-                ConnectionOpen = false;
                 Core.WriteLine(" [Failed]", ConsoleColor.Red);
+                return false;
             }
         }
 
-        public static bool Authenticate(Player Player)
+        public static async Task<bool> Authenticate(Player Player)
         {
-            if (!PingDB())
+            if (!await PingDB())
                 return false;
 
             var Exchange = new DataExchange(ExchangeType.LoadAccountValue,Core.AccountDatabasePath + Player.Username + "\\AccountInfo.ini", "Account");
@@ -52,13 +52,13 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 IPC.Set(Exchange, "Password", Player.Password);
             }
 
-            if (IPC.Get(Exchange, "Username", "") != Player.Username)
+            if (await IPC.Get(Exchange, "Username", "") != Player.Username)
                 return false;
 
-            if (IPC.Get(Exchange, "LoginType", "ERROR") == "Banned")
+            if (await IPC.Get(Exchange, "LoginType", "ERROR") == "Banned")
                 return false;
 
-            var Pass =  IPC.Get(Exchange, "Password", "");
+            var Pass =  await IPC.Get(Exchange, "Password", "");
 
             if (Pass == "")
             {
@@ -71,47 +71,73 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             if (Pass != Player.Password)
                 return false;
 
-            Player.UID = IPC.Get(Exchange, "UID", (uint)0);
+            Player.UID = await IPC.Get(Exchange, "UID", (uint)0);
             return (Player.UID != 0);
         }
-
-        public static ServerInfo FindServer(Player Player)
+        public static async Task<bool> FindSpawnPoint(Player Player)
         {
-            if (!PingDB())
+            if (!await PingDB())
+                return false;
+
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Account");
+            Player.X = await IPC.Get(Exchange, "TransferX", 61);
+            Player.Y = await IPC.Get(Exchange, "TransferY", 109);
+            Player.Z = await IPC.Get(Exchange, "TransferMap", 1010);
+
+            return true;
+        }
+
+        public static async Task<bool> LoadCharacter(Player Player)
+        {
+            if (!await PingDB())
+                return false;
+            var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
+            Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
+
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Character");
+            Player.Name = await IPC.Get(Exchange, "Name", "ERROR");
+
+            Player.InitializeDatabaseConnection();
+
+            Player.Spouse = await IPC.Get(Exchange, "Spouse", "None");
+            Player.Model = await IPC.Get(Exchange, "Model", 1003);
+            Player.Hair = await IPC.Get(Exchange, "Hair", 1);
+            Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
+            Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
+            Player.Cps = await IPC.Get(Exchange, "Cps", 0);
+            Player.Money = await IPC.Get(Exchange, "Money", 1000);
+            Player.CurrentHP = await IPC.Get(Exchange, "CurrentHP", 1);
+            Player.CurrentMP = await IPC.Get(Exchange, "CurrentMP", 0);
+
+            return true;
+        }
+        public static async Task<ServerInfo> FindServer(Player Player)
+        {
+            if (!await PingDB())
                 return null;
 
             var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath+ Player.Username + "\\PlayerInfo.ini", "Character");
 
             return new ServerInfo
             {
-                IP = IPC.Get(Exchange, "ServerIP", "192.168.0.2"),
-                Port = IPC.Get(Exchange, "ServerPort", 5816)
+                IP =await IPC.Get(Exchange, "ServerIP", "192.168.0.2"),
+                Port =await IPC.Get(Exchange, "ServerPort", 5816)
             };
         }
 
-        public static bool PingDB()
+        public static async Task<bool> PingDB()
         {
             var Ping = new DataExchange(ExchangeType.Ping, "", "");
             try
             {
-                Core.DbServerConnection.Execute(Ping);
+                await Core.DbServerConnection.Execute(Ping);
                 return true;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
-                try
-                {
-                    var PipeFactory = new ChannelFactory<IDataExchange>(new NetTcpBinding(), new EndpointAddress("net.tcp://192.168.0.2/Database"));
-                    Core.DbServerConnection = PipeFactory.CreateChannel();
-                    Core.DbServerConnection.Execute(Ping);
-                    return true;
-                }
-                catch
-                {
-                    Core.WriteLine(" [Fail]", ConsoleColor.Red);
-                }
+                await Open();
+                return await Core.DbServerConnection.Execute(Ping) != "";
             }
-            return false;
         }
 
         private static uint _LastUI;

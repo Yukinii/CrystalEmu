@@ -1,6 +1,5 @@
 ﻿using System;
 using CrystalEmuLib;
-using CrystalEmuLib.IPC_Comms.Database;
 using CrystalEmuLogin.Networking.IPC_Comms;
 using CrystalEmuLogin.Networking.Queue;
 using CrystalEmuLogin.Networking.Sockets;
@@ -16,7 +15,6 @@ namespace CrystalEmuLogin
             {
                 DatabaseConnection.Open();
             }
-            DataExchangeOverLord.Initialize();
             IncomingQueue.Start();
             OutgoingQueue.Start();
             LoginSocket.Open();
