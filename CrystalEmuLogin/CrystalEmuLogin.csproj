@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kernel.cs" />
+    <Compile Include="CoreSystems\Kernel.cs" />
     <Compile Include="Networking\Handlers\[1009] MsgItem.cs" />
     <Compile Include="Networking\Handlers\MsgAction.cs" />
     <Compile Include="Networking\Handlers\[1051] MsgConnect.cs" />
@@ -66,6 +66,7 @@
     <Compile Include="Networking\Packets\[1055] MsgTransfer.cs" />
     <Compile Include="Networking\Queue\OutgoingQueue.cs" />
     <Compile Include="Networking\Queue\IncomingQueue.cs" />
+    <Compile Include="Networking\Sockets\GameSocket.cs" />
     <Compile Include="Networking\Sockets\LoginSocket.cs" />
     <Compile Include="PlayerFunctions\Player.cs" />
     <Compile Include="Program.cs" />

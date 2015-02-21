@@ -28,7 +28,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 Core.WriteLine(" [Success]", ConsoleColor.Green);
                 return true;
             }
-            catch
+            catch (Exception Ex)
             {
                 Core.WriteLine(" [Failed]", ConsoleColor.Red);
                 return false;

@@ -1,7 +1,7 @@
 ﻿using System;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
-using CrystalEmuLib.Extensions;
+using CrystalEmuLogin.CoreSystems;
 using CrystalEmuLogin.Networking.IPC_Comms;
 using CrystalEmuLogin.Networking.Packets;
 using CrystalEmuLogin.PlayerFunctions;

@@ -1,10 +1,10 @@
 ﻿using System;
-using CrystalEmu.Networking.Queue;
-using CrystalEmu.PlayerFunctions;
 using CrystalEmuLib;
 using CrystalEmuLib.Sockets;
+using CrystalEmuLogin.Networking.Queue;
+using CrystalEmuLogin.PlayerFunctions;
 
-namespace CrystalEmu.Networking.Sockets
+namespace CrystalEmuLogin.Networking.Sockets
 {
     internal static class GameSocket
     {
@@ -14,10 +14,10 @@ namespace CrystalEmu.Networking.Sockets
         {
             try
             {
-                Console.Write("Opening a Map Server Socket...");
+                Console.Write("Opening Selector Server Socket...");
                 Socket = new YukiServer
                 {
-                    Port = 5817,
+                    Port = 5816,
                     OnClientConnect = Handle,
                     OnClientReceive = Handle
                 };

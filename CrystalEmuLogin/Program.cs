@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using CrystalEmuLib;
 using CrystalEmuLogin.Networking.IPC_Comms;
 using CrystalEmuLogin.Networking.Queue;
@@ -11,13 +12,14 @@ namespace CrystalEmuLogin
         private static void Main()
         {
             Console.Title = "CrystalEmu - Login Server";
-            while (!DatabaseConnection.ConnectionOpen)
+            while (!DatabaseConnection.Open().Result)
             {
-                DatabaseConnection.Open();
+                Thread.Sleep(100);
             }
             IncomingQueue.Start();
             OutgoingQueue.Start();
             LoginSocket.Open();
+            GameSocket.Open();
             Core.WriteLine("Online! Type help or ? for available commands!", ConsoleColor.White);
 
             #region Console Command Listener

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using CrystalEmu.Networking.Packets;
+﻿using CrystalEmu.Networking.Packets;
 using CrystalEmu.Networking.Queue;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;

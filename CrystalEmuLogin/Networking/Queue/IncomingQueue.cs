@@ -31,6 +31,21 @@ namespace CrystalEmuLogin.Networking.Queue
                             MsgConnect.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
+                        case PacketID.MsgAction:
+                        {
+                            MsgAction.Handle((Player)Pi.Owner, Pi.Packet);
+                            break;
+                        }
+                        case PacketID.MsgItem:
+                        {
+                            MsgItem.Handle((Player)Pi.Owner, Pi.Packet);
+                            break;
+                        }
+                        case PacketID.MsgLogin:
+                        {
+                            MsgLogin.Handle((Player)Pi.Owner, Pi.Packet);
+                            break;
+                        }
                     }
                 }
             }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using CrystalEmuLogin.PlayerFunctions;
 
-namespace CrystalEmuLogin
+namespace CrystalEmuLogin.CoreSystems
 {
     public static class Kernel
     {
