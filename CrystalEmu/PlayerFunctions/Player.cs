@@ -51,7 +51,6 @@ namespace CrystalEmu.PlayerFunctions
         {
             ServerInfo = new ServerInfo {IP = "192.168.0.2", Port = 5816};
             Socket = YukiSocket;
-            SaveExchange = new DataExchange(ExchangeType.Ping, "", "");
         }
         public async Task InitializeDatabaseConnection()
         {

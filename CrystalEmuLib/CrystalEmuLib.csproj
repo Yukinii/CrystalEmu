@@ -69,6 +69,9 @@
     <Compile Include="Sockets\Socket Event.cs" />
     <Compile Include="Sockets\YukiSocket.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="0-Resharper Settings\GlobalSettingsStorage.DotSettings" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
