@@ -44,7 +44,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
-        public readonly Dictionary<MsgItemPosition, Item> Equipment; 
+        public readonly Dictionary<MsgItemPosition, Item> Equipment;
         public uint UID;
         public string Username;
         public string Password;
