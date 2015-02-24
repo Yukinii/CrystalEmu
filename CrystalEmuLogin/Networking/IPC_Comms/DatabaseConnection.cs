@@ -104,11 +104,6 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             Player.Hair = await IPC.Get(Exchange, "Hair", 1);
             Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
             Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
-            Player.Cps = await IPC.Get(Exchange, "Cps", 0);
-            Player.Money = await IPC.Get(Exchange, "Money", 1000);
-            Player.CurrentHP = await IPC.Get(Exchange, "CurrentHP", 1);
-            Player.CurrentMP = await IPC.Get(Exchange, "CurrentMP", 0);
-
             return true;
         }
         public static async Task<ServerInfo> FindServer(Player Player)

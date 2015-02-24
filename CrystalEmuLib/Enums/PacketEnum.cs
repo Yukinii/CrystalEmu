@@ -14,5 +14,6 @@
         MsgLogin = 1052,
         MsgTransfer = 1055,
         MsgNpc = 1109,
+        MsgDialog = 2032,
     }
 }

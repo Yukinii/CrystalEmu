@@ -23,8 +23,8 @@ namespace CrystalEmuLogin.Networking.Packets
             P.Write(Right?.ID ?? 0);
             var Left = Player.Equipment.GetValueOrNull(MsgItemPosition.Head);
             P.Write(Left?.ID ?? 0);
-            P.Write(Player.CurrentHP);
-            P.Write(Player.CurrentMP);
+            P.Write(0);
+            P.Write(0);
             P.Write(Player.X);
             P.Write(Player.Y);
             P.Write(Player.Hair);
