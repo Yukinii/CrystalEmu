@@ -8,17 +8,15 @@ using CrystalEmuLogin.PlayerFunctions;
 
 namespace CrystalEmuLogin.Networking.Handlers
 {
-    public static class MsgAction
+    public static class MsgActionHandler
     {
-        public static void Handle(Player Player, byte[] Packet)
+        public static void Handle(Player Player, MsgAction Packet)
         {
-            var SubType = (MsgActionType)Packet[22];
-
-            switch (SubType)
+            switch (Packet.Action)
             {
                 case MsgActionType.MapShow:
                 {
-                    ProcessLogin(Player);
+                    ProcessLogin(Player, Packet);
                     break;
                 }
                 case MsgActionType.Jump:
@@ -64,13 +62,13 @@ namespace CrystalEmuLogin.Networking.Handlers
                 case MsgActionType.Sync:
                 case MsgActionType.ViewOthersEquip:
                 {
-                    Core.WriteLine("Unhandled MsgAction Type: " + SubType, ConsoleColor.Red);
+                    Core.WriteLine("Unhandled MsgAction Type: " + Packet.Action, ConsoleColor.Red);
                     break;
                 }
             }
         }
 
-        private static async void ProcessLogin(Player Player)
+        private static async void ProcessLogin(Player Player, MsgAction Packet)
         {
             Kernel.Players.TryAdd(Player.UID, Player);
 
@@ -78,8 +76,16 @@ namespace CrystalEmuLogin.Networking.Handlers
             if (await DatabaseConnection.FindSpawnPoint(Player))
             {
                 Player.Send(CoPacket.MsgHero(Player));
-                Player.Send(CoPacket.GeneralData(Player.UID, (ushort)Player.Z, (ushort)Player.X, (ushort)Player.Y, MsgActionType.MapShow));
-            }
+
+                Packet.TimeStamp = (uint)Environment.TickCount;
+                Packet.UID = Player.UID;
+                Packet.Data1 = Player.Z;
+                Packet.Data2Low = Player.X;
+                Packet.Data2High = Player.Y;
+                Packet.Action = MsgActionType.MapShow;
+
+                Player.Send(Packet);
+           }
             else
                 Player.Disconnect();
 

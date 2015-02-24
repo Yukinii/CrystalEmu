@@ -33,7 +33,7 @@ namespace CrystalEmuLogin.Networking.Queue
                         }
                         case PacketID.MsgAction:
                         {
-                            MsgAction.Handle((Player)Pi.Owner, Pi.Packet);
+                            MsgActionHandler.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
                         case PacketID.MsgItem:

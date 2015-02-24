@@ -33,9 +33,9 @@ namespace CrystalEmuLogin.PlayerFunctions
         private ushort _AttributePoints;
         private uint _CurrentHP;
         private uint _CurrentMP;
-        private int _X;
-        private int _Y;
-        private int _Z;
+        private ushort _X;
+        private ushort _Y;
+        private ushort _Z;
         private uint _MaximumHP;
         private uint _MaximumMP;
         private byte _Action;
@@ -292,7 +292,7 @@ namespace CrystalEmuLogin.PlayerFunctions
             }
         }
 
-        public int X
+        public ushort X
         {
             get { return _X; }
             set
@@ -302,7 +302,7 @@ namespace CrystalEmuLogin.PlayerFunctions
             }
         }
 
-        public int Y
+        public ushort Y
         {
             get { return _Y; }
             set
@@ -312,7 +312,7 @@ namespace CrystalEmuLogin.PlayerFunctions
             }
         }
 
-        public int Z
+        public ushort Z
         {
             get { return _Z; }
             set
