@@ -7,9 +7,9 @@
         MsgHero = 1006,
         MsgItem = 1009,
         MsgAction = 1010,
-
         MsgSpwan = 1014,
         MsgUpdate = 1017,
+        MsgTime = 1033,
         MsgConnect = 1051,
         MsgLogin = 1052,
         MsgTransfer = 1055,

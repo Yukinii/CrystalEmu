@@ -87,6 +87,7 @@ namespace CrystalEmuLogin.Networking.Handlers
             Player.Send(CoPacket.MsgDialog("Hi!",1,0, MsgDialogType.Link));
             Player.Send(CoPacket.MsgDialog("",0,10,MsgDialogType.Face));
             Player.Send(CoPacket.MsgDialog("",0,0,MsgDialogType.End));
+            Player.Send(CoPacket.MsgTime());
         }
     }
 }

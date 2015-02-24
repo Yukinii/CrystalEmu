@@ -7,19 +7,13 @@ namespace CrystalEmuLogin.Networking.Packets
     {
         public static byte[] MsgDialog(string Text, byte Index, ushort Face, MsgDialogType Type)
         {
-            var P = new Packet(PacketID.MsgDialog, 16 + Text.Length);
-
-            P.Write(Index, 10);
-            switch (Type)
-            {
-                case MsgDialogType.Face:
-                    P.Write((short)10, 4);
-                    P.Write((short)10, 6);
-                    P.Write((short)Face);
-                    break;
-            }
-            P.Write((short)Type, 11);
-            P.Write(Text, true, 13);
+            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgDialog, 16 + Text.Length);
+            P.Write(0);
+            P.Write((short)Face);
+            P.Write(Index);
+            P.Write((short)Type);
+            P.Write(1);
+            P.Write(Text);
             return P.Finish();
         }
     }

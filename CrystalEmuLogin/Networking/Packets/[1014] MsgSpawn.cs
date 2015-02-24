@@ -9,7 +9,7 @@ namespace CrystalEmuLogin.Networking.Packets
     {
         public static byte[] MsgSpawn(Player Player)
         {
-            var P = new Packet(PacketID.MsgSpwan, 100 + Player.Name.Length);
+            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgSpwan, 100 + Player.Name.Length);
             P.Write(Player.UID);
             P.Write(Player.Model);
             P.Write(Player.StatusEffects);

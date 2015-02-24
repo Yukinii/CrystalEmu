@@ -65,6 +65,7 @@
     <Compile Include="Networking\Packets\[1010] MsgAction.cs" />
     <Compile Include="Networking\Packets\[1014] MsgSpawn.cs" />
     <Compile Include="Networking\Packets\[1017] MsgUpdate.cs" />
+    <Compile Include="Networking\Packets\[1033] MsgTime.cs" />
     <Compile Include="Networking\Packets\[1055] MsgTransfer.cs" />
     <Compile Include="Networking\Packets\[2032] MsgDialog.cs" />
     <Compile Include="Networking\Queue\OutgoingQueue.cs" />

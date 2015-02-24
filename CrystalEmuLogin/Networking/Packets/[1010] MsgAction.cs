@@ -8,7 +8,7 @@ namespace CrystalEmuLogin.Networking.Packets
     {
         public static byte[] GeneralData(uint UID, uint Value1, ushort Value2, ushort Value3, MsgActionType Type)
         {
-            var P = new Packet(PacketID.MsgAction, 24);
+            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgAction, 24);
             P.Write(Environment.TickCount);
             P.Write(UID);
             P.Write(Value1);

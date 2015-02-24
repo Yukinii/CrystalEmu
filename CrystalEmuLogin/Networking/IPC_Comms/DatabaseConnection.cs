@@ -94,14 +94,14 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
             Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Character");
-            Player.Name = await IPC.Get(Exchange, "Name", "ERROR");
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + "SELECTOR\\PlayerInfo.ini", "Character");
+            Player.Name = await IPC.Get(Exchange, "Name", "SELECTOR");
 
             Player.InitializeDatabaseConnection();
 
-            Player.Spouse = await IPC.Get(Exchange, "Spouse", "None");
+            Player.Spouse = await IPC.Get(Exchange, "Spouse", "CrystalEmu");
             Player.Model = await IPC.Get(Exchange, "Model", 1003);
-            Player.Hair = await IPC.Get(Exchange, "Hair", 1);
+            Player.Hair = await IPC.Get(Exchange, "Hair", 310);
             Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
             Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
             return true;
