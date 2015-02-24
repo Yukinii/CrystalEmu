@@ -1,112 +1,63 @@
-﻿using CrystalEmuLib.Enums;
+﻿using System;
+using CrystalEmuLib.Enums;
+using CrystalEmuLib.Networking.Packets;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
-    public unsafe struct MsgAction
+    public struct MsgAction
     {
-        public uint TimeStamp { get; set; }
-        public uint UID { get; set; }
-        public uint Data1 { get; set; }
-        public uint Data2 { get; set; }
-        public ushort Data3 { get; set; }
-        public MsgActionType Action { get; set; }
-        #region Data1
-        /// <summary>
-        /// Offset [12]
-        /// </summary>
-        public ushort Data1Low
+        public uint TimeStamp;
+        public uint UID;
+        public uint Offset12Big;
+        public uint Offset16Big;
+        public ushort Offset20;
+        public MsgActionType Action;
+        public ushort Offset12
         {
-            get { return (ushort)Data1; }
-            set { Data1 = (uint)((Data1High << 16) | value); }
+            get { return (ushort)Offset12Big; }
+            set { Offset12Big = (uint)((Offset14 << 16) | value); }
         }
-
-        /// <summary>
-        /// Offset [14]
-        /// </summary>
-        public ushort Data1High
+        public ushort Offset14
         {
-            get { return (ushort)(Data1 >> 16); }
-            set { Data1 = (uint)((value << 16) | Data1Low); }
+            get { return (ushort)(Offset12Big >> 16); }
+            set { Offset12Big = (uint)((value << 16) | Offset12); }
         }
-
-        #endregion
-        #region Data2
-        /// <summary>
-        /// Offset [16]
-        /// </summary>
-        public ushort Data2Low
+        public ushort Offset16
         {
-            get { return (ushort)Data2; }
-            set { Data2 = (uint)((Data2High << 16) | value); }
+            get { return (ushort)Offset16Big; }
+            set { Offset16Big = (uint)((Offset18 << 16) | value); }
         }
-
-        /// <summary>
-        /// Offset [18]
-        /// </summary>
-        public ushort Data2High
+        public ushort Offset18
         {
-            get { return (ushort)(Data2 >> 16); }
-            set { Data2 = (uint)((value << 16) | Data2Low); }
+            get { return (ushort)(Offset16Big >> 16); }
+            set { Offset16Big = (uint)((value << 16) | Offset16); }
         }
-
-        #endregion
-        public static MsgAction Create(uint Offset4, uint Offset8, uint Offset12, uint Offset16, ushort Offset20, MsgActionType Type)
-        {
-            var Packet = new MsgAction
-            {
-                TimeStamp = Offset4,
-                UID = Offset8,
-                Data1 = Offset12,
-                Data2 = Offset16,
-                Data3 = Offset20,
-                Action = Type
-            };
-            return Packet;
-        }
-        public static MsgAction Create(uint Offset4, uint Offset8, uint Offset12, ushort Offset16, ushort Offset20, MsgActionType Type)
-        {
-            var Packet = new MsgAction
-            {
-                TimeStamp = Offset4,
-                UID = Offset8,
-                Data1 = Offset12,
-                Data2Low = Offset16,
-                Data2High = Offset20,
-                Action = Type
-            };
-            return Packet;
-        }
-
+       
         public static implicit operator MsgAction(byte[] Buffer)
         {
-            var Packet = new MsgAction();
-            fixed (byte* Pointer = Buffer)
+            var Packet = new MsgAction
             {
-                Packet.TimeStamp = *((uint*)(Pointer + 4));
-                Packet.UID = *((uint*)(Pointer + 8));
-                Packet.Data1 = *((uint*)(Pointer + 12));
-                Packet.Data2 = *((uint*)(Pointer + 16));
-                Packet.Data3 = *((ushort*)(Pointer + 20));
-                Packet.Action = *(MsgActionType*)(Pointer + 22);
-            }
+                TimeStamp = BitConverter.ToUInt32(Buffer, 4),
+                UID = BitConverter.ToUInt32(Buffer, 8),
+                Offset12 = BitConverter.ToUInt16(Buffer, 12),
+                Offset14 =  BitConverter.ToUInt16(Buffer, 14),
+                Offset16 = BitConverter.ToUInt16(Buffer, 16),
+                Offset18 = BitConverter.ToUInt16(Buffer, 18),
+                Offset20 = BitConverter.ToUInt16(Buffer, 20),
+                Action = (MsgActionType)BitConverter.ToUInt32(Buffer, 22)
+            };
             return Packet;
         }
-
         public static implicit operator byte[] (MsgAction Packet)
         {
-            var Buffer = new byte[24];
-            fixed (byte* Pointer = Buffer)
-            {
-                *((ushort*)(Pointer + 0)) = (ushort)Buffer.Length;
-                *((ushort*)(Pointer + 2)) = 1010;
-                *((uint*)(Pointer + 4)) = Packet.TimeStamp;
-                *((uint*)(Pointer + 8)) = Packet.UID;
-                *((uint*)(Pointer + 12)) = Packet.Data1;
-                *((uint*)(Pointer + 16)) = Packet.Data2;
-                *((ushort*)(Pointer + 20)) = Packet.Data3;
-                *((MsgActionType*)(Pointer + 22)) = Packet.Action;
-            }
-            return Buffer;
+            var P = new Packet(PacketID.MsgAction, 28);
+            P.Write(Packet.TimeStamp);
+            P.Write(Packet.UID);
+            P.Write(Packet.Offset12Big);
+            P.Write(Packet.Offset16Big);
+            P.Write(Packet.Offset20);
+            P.Write((ushort)Packet.Action);
+            return P.Finish();
         }
     }
 }

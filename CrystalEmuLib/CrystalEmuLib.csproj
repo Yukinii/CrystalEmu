@@ -54,6 +54,7 @@
     <Compile Include="Enums\PacketEnum.cs" />
     <Compile Include="Extensions\ByteExtensions.cs" />
     <Compile Include="Extensions\ConcurrentDictionaryExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IPC Comms\Database\DataExchange.cs" />
     <Compile Include="Enums\ExchangeType.cs" />
     <Compile Include="IPC Comms\Database\IniFile.cs" />

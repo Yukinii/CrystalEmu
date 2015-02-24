@@ -28,7 +28,9 @@ namespace CrystalEmuLogin.Networking.Handlers
                 Player.Disconnect();
 
             (Player.Socket.Crypto as ConquerStanderedCipher)?.SetKeys(ServerKey, Player.UID);
-            Player.Send(CoPacket.MsgText(Player.UID, "SYSTEM", "ALLUSERS", "ANSWER_OK", MsgTextType.LoginInformation));
+            var Message = new MsgText {Color =0xFF0000, From = "SYSTEM", To = "ALLUSERS", Message = "ANSWER_OK", Type = MsgTextType.LoginInformation};
+
+            Player.Send(Message);
             Player.Send(CoPacket.MsgHero(Player));
         }
 
@@ -36,8 +38,8 @@ namespace CrystalEmuLogin.Networking.Handlers
         {
             if (Version == 0)
                 return true;
-
-            Player.Send(CoPacket.MsgText(Player.UID, "SYSTEM", "ALLUSERS", "Wrong Version", MsgTextType.LoginInformation));
+            var Message = new MsgText { Color = 0xFF0000, From = "SYSTEM", To = "ALLUSERS", Message = "Wrong Version", Type = MsgTextType.LoginInformation };
+            Player.Send(Message);
             return false;
         }
 
@@ -47,7 +49,8 @@ namespace CrystalEmuLogin.Networking.Handlers
             Core.WriteLine("µKey: " + ComputedKey + " | Expected: " + Key, ConsoleColor.Magenta);
             if (Key == ComputedKey)
                 return true;
-            Player.Send(CoPacket.MsgText(Player.UID, "SYSTEM", "ALLUSERS", "Wrong Key", MsgTextType.LoginInformation));
+            var Message = new MsgText { Color = 0xFF0000, From = "SYSTEM", To = "ALLUSERS", Message = "Wrong Key", Type = MsgTextType.LoginInformation };
+            Player.Send(Message);
             return false;
         }
 
@@ -56,7 +59,8 @@ namespace CrystalEmuLogin.Networking.Handlers
             if (Language == "En")
                 return true;
 
-            Player.Send(CoPacket.MsgText(Player.UID, "SYSTEM", "ALLUSERS", "Wrong Language", MsgTextType.LoginInformation));
+            var Message = new MsgText { Color = 0xFF0000, From = "SYSTEM", To = "ALLUSERS", Message = "Wrong Language", Type = MsgTextType.LoginInformation };
+            Player.Send(Message);
             return true;
         }
     }

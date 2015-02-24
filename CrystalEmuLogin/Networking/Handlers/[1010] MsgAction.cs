@@ -79,9 +79,9 @@ namespace CrystalEmuLogin.Networking.Handlers
 
                 Packet.TimeStamp = (uint)Environment.TickCount;
                 Packet.UID = Player.UID;
-                Packet.Data1 = Player.Z;
-                Packet.Data2Low = Player.X;
-                Packet.Data2High = Player.Y;
+                Packet.Offset12Big = Player.Z;
+                Packet.Offset16 = Player.X;
+                Packet.Offset18 = Player.Y;
                 Packet.Action = MsgActionType.MapShow;
 
                 Player.Send(Packet);

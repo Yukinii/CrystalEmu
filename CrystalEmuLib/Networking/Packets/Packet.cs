@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using CrystalEmuLib.Enums;
+using  CrystalEmuLib.Extensions;
 
 namespace CrystalEmuLib.Networking.Packets
 {
     public unsafe class Packet
     {
         private int _Offset;
-        private byte[] _Buffer;
+        private readonly byte[] _Buffer;
 
         public Packet(PacketID PacketID, int Size)
         {
@@ -79,11 +83,11 @@ namespace CrystalEmuLib.Networking.Packets
             *((ulong*)(Ptr + _Offset)) = Val;
             _Offset += 8;
         }
-        public void Write(string Val, bool PrefixLenght = true, int Offset = - 1)
+        public void Write(string Val, bool PrefixLength = true, int Offset = - 1)
         {
             if (Offset != - 1)
                 _Offset = Offset;
-            if (PrefixLenght)
+            if (PrefixLength)
             {
                 *(Ptr + _Offset) = (byte)Val.Length;
                 _Offset++;
@@ -94,115 +98,37 @@ namespace CrystalEmuLib.Networking.Packets
                 _Offset++;
             }
         }
+
+        public string ReadString(int Offset = -1)
+        {
+            if (Offset != -1)
+                _Offset = Offset;
+
+            var Len = *(Ptr + _Offset);
+            var Sb = new StringBuilder(Len);
+
+            for (var I = 0; I < Len; I++)
+            {
+                Sb.Append((char)*(Ptr + _Offset + I));
+            }
+
+            return Sb.ToString();
+        }
+        public string ReadString(int Len, int Offset = -1)
+        {
+            if (Offset != -1)
+                _Offset = Offset;
+
+            var Sb = new StringBuilder(Len);
+
+            for (var I = 0; I < Len; I++)
+            {
+                Sb.Append((char)*(Ptr + _Offset + I));
+            }
+
+            return Sb.ToString();
+        }
         public void Move(int Count) => _Offset += Count;
         public byte[] Finish() => _Buffer;
     }
-
-    //public class Packet : IDisposable
-    //{
-    //    private readonly byte[] _Buffer;
-    //    private readonly MemoryStream _Stream;
-    //    private readonly BinaryWriter _Writer;
-
-    //    public Packet(PacketID ID, int Size)
-    //    {
-    //        _Buffer = new byte[Size];
-    //        _Stream = new MemoryStream(_Buffer);
-    //        _Writer = new BinaryWriter(_Stream);
-    //        _Writer.Write((ushort)Size);
-    //        _Writer.Write((ushort)ID);
-    //    }
-
-    //    public void Dispose()
-    //    {
-    //        _Stream?.Dispose();
-    //        _Writer?.Dispose();
-    //    }
-
-    //    public void Write(byte Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(uint Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(ulong Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(int Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(ushort Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(short Value, int Offset = - 1)
-    //    {
-    //        if (Offset != - 1)
-    //        {
-    //            if (_Writer != null)
-    //                _Writer.BaseStream.Position = Offset;
-    //        }
-
-    //        _Writer?.Write(Value);
-    //    }
-
-    //    public void Write(string Value, bool PrefixLenght)
-    //    {
-    //        if (PrefixLenght)
-    //        {
-    //            var Array = Value?.ToCharArray();
-    //            if (Array == null) return;
-    //            _Writer?.Write((byte)Array.Length);
-    //            _Writer?.Write(Array);
-    //        }
-    //        else
-    //            _Writer?.Write(Value?.ToCharArray());
-    //    }
-
-    //    public byte[] Finish()
-    //    {
-    //        _Writer.Flush();
-    //        _Stream.Flush();
-    //        return _Buffer;
-    //    }
-    //}
 }
