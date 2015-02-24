@@ -36,7 +36,7 @@ namespace CrystalEmuLogin.Networking.Packets
             P.Write((short)0);
             P.Write((byte)1);
             P.Write((byte)2);
-            //P.Write((byte) (Player.IsReborn ? 1 : 0));
+            P.Write((byte) (Player.IsReborn ? 1 : 0));
             //P.Zerofill(3);
             P.Write(Player.Name);
             P.Write(Player.Spouse);

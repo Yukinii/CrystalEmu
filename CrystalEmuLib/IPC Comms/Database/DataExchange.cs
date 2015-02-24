@@ -12,16 +12,20 @@ namespace CrystalEmuLib.IPC_Comms.Database
 {
     public static class DataExchangeOverLord
     {
-        internal static volatile bool Initialized = false;
+        internal static volatile bool Initialized;
         internal static readonly ConcurrentDictionary<string, IniFile> Cache = new ConcurrentDictionary<string, IniFile>(50, 100);
         internal static readonly ConcurrentDictionary<string, IniFile> Cleanup = new ConcurrentDictionary<string, IniFile>(50, 100);
         internal static readonly Timer AutoFlushTimer = new Timer();
         public static void Initialize()
         {
+            Initialized = true;
+
+            if (AutoFlushTimer.Enabled)
+                return;
+
             AutoFlushTimer.Elapsed += AutoFlushAutoFlushTimerElapsed;
             AutoFlushTimer.Interval = 10 * 1000;
             AutoFlushTimer.Start();
-            Initialized = true;
         }
 
         internal static IniFile CacheLookup(DataExchange De)

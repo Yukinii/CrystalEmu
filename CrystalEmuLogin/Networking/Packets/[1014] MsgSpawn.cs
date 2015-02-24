@@ -1,6 +1,7 @@
 ﻿using CrystalEmuLib.Enums;
 using CrystalEmuLib.Networking.Packets;
 using CrystalEmuLogin.PlayerFunctions;
+using CrystalEmuLib.Extensions;
 
 namespace CrystalEmuLogin.Networking.Packets
 {
@@ -14,14 +15,14 @@ namespace CrystalEmuLogin.Networking.Packets
             P.Write(Player.StatusEffects);
             P.Write((ushort)0);
             P.Write((byte)0);
-            if (Player.Equipment.ContainsKey(MsgItemPosition.Head))
-                P.Write(Player.Equipment[MsgItemPosition.Head].ID);
-            if (Player.Equipment.ContainsKey(MsgItemPosition.Armor))
-                P.Write(Player.Equipment[MsgItemPosition.Armor].ID);
-            if (Player.Equipment.ContainsKey(MsgItemPosition.Right))
-                P.Write(Player.Equipment[MsgItemPosition.Right].ID);
-            if (Player.Equipment.ContainsKey(MsgItemPosition.Left))
-                P.Write(Player.Equipment[MsgItemPosition.Left].ID);
+            var Head = Player.Equipment.GetValueOrNull(MsgItemPosition.Head);
+            P.Write(Head?.ID ?? 0);
+            var Armor = Player.Equipment.GetValueOrNull(MsgItemPosition.Head);
+            P.Write(Armor?.ID ?? 0);
+            var Right = Player.Equipment.GetValueOrNull(MsgItemPosition.Head);
+            P.Write(Right?.ID ?? 0);
+            var Left = Player.Equipment.GetValueOrNull(MsgItemPosition.Head);
+            P.Write(Left?.ID ?? 0);
             P.Write(Player.CurrentHP);
             P.Write(Player.CurrentMP);
             P.Write(Player.X);

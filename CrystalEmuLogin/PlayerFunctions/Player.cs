@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
@@ -44,13 +44,14 @@ namespace CrystalEmuLogin.PlayerFunctions
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
-        public readonly Dictionary<MsgItemPosition, Item> Equipment;
+        public readonly ConcurrentDictionary<MsgItemPosition, Item> Equipment;
         public uint UID;
         public string Username;
         public string Password;
         public uint LastJump;
         public int LastWalk;
         public ulong StatusEffects;
+        public bool IsReborn;
 
         public string Name
         {
@@ -306,7 +307,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         {
             ServerInfo = new ServerInfo { IP = "192.168.0.2", Port = 5816 };
             Socket = YukiSocket;
-            Equipment = new Dictionary<MsgItemPosition, Item>(9);
+            Equipment = new ConcurrentDictionary<MsgItemPosition, Item>();
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);

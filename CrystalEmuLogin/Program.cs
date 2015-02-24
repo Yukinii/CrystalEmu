@@ -13,9 +13,8 @@ namespace CrystalEmuLogin
         {
             Console.Title = "CrystalEmu - Login Server";
             while (!DatabaseConnection.Open().Result)
-            {
                 Thread.Sleep(100);
-            }
+            
             IncomingQueue.Start();
             OutgoingQueue.Start();
             LoginSocket.Open();
@@ -43,7 +42,6 @@ namespace CrystalEmuLogin
                     }
                 }
             }
-
             #endregion
         }
     }

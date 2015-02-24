@@ -9,10 +9,8 @@ namespace CrystalEmuLib.IPC_Comms.Shared
     {
         public static bool Set(DataExchange De, string Key, string Value)
         {
-            if (De==null || string.IsNullOrEmpty(Key))
-            {
+            if (De == null || string.IsNullOrEmpty(Key))
                 return false;
-            }
             
             De.Key = Key;
             De.Value = Value.ToString(CultureInfo.InvariantCulture);
@@ -25,9 +23,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
         public static bool Set(DataExchange De, string Key, bool Value)
         {
             if (De == null || string.IsNullOrEmpty(Key))
-            {
                 return false;
-            }
 
             De.Key = Key;
             De.Value = Value.ToString(CultureInfo.InvariantCulture);
@@ -40,9 +36,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
         public static bool Set(DataExchange De, string Key, ulong Value)
         {
             if (De == null || string.IsNullOrEmpty(Key))
-            {
                 return false;
-            }
 
             De.Key = Key;
             De.Value = Value.ToString(CultureInfo.InvariantCulture);
@@ -55,9 +49,7 @@ namespace CrystalEmuLib.IPC_Comms.Shared
         public static bool Set(DataExchange De, string Key, int Value)
         {
             if (De == null || string.IsNullOrEmpty(Key))
-            {
                 return false;
-            }
 
             De.Key = Key;
             De.Value = Value.ToString(CultureInfo.InvariantCulture);

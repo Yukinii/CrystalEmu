@@ -21,7 +21,6 @@ namespace CrystalEmuLogin.Networking.Packets
             P.Write((byte)0);
             P.Write(Msg);
             return P.Finish();
-
         }
     }
 }
