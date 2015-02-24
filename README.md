@@ -22,7 +22,12 @@ My casing is very strict. It's almost always PascalCasing. Private's have a unde
 
 * 1004 - Server -> Client yes, Client -> Server no
 * 1005 - Walking, no dmap checks yet
+* 1006 - Mostly complete. Maybe one or two values missing
 * 1009 - Ping
 * 1010 - MapShow, Jump
+* 1014 - Done
 * 1017 - Done
+* 1033 - Seems to be unsupported by the 4348 client
+* 1055 - Done
 * 1052 - Everything
+* 2032 - Work in progress
