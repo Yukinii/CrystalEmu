@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using CrystalEmuLib;
 using CrystalEmuLib.Extensions;
@@ -39,7 +41,16 @@ namespace CrystalEmuLogin.Networking.Queue
             if (Packet.Length != Packet.Size())
                 return;
 
-            Packets.Enqueue(new PacketInfo {Owner = P, Packet = Packet});
+            Packets.Enqueue(new PacketInfo { Owner = P, Packet = Packet });
+            AutoResetEvent.Set();
+        }
+
+        public static void Add(Player P, IEnumerable<byte[]> PacketList)
+        {
+            foreach (var Packet in PacketList.Where(Packet => Packet != null && P != null).Where(Packet => Packet.Length == Packet.Size()))
+            {
+                Packets.Enqueue(new PacketInfo {Owner = P, Packet = Packet});
+            }
             AutoResetEvent.Set();
         }
 

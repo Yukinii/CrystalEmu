@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using CrystalEmuLib;
 using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
@@ -40,6 +41,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         private uint _MaximumMP;
         private byte _Action;
         #endregion
+        //public MsgSpawn SpawnPacket;
         public readonly YukiSocket Socket;
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
@@ -336,6 +338,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
+        public void Send(HashSet<byte[]> Packet) => OutgoingQueue.Add(this, Packet);
         public void ForceSend(byte[] Packet) => Socket.Send(Packet);
         public void Disconnect() => Socket.Disconnect();
 

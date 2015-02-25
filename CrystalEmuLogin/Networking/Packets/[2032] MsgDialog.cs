@@ -1,14 +1,17 @@
 ﻿using System;
-using CrystalEmuLib.Enums;
-using CrystalEmuLib.Extensions;
-using CrystalEmuLib.Networking.Packets;
+using System.Collections.Generic;
+
 
 namespace CrystalEmuLogin.Networking.Packets
 {
     public unsafe struct MsgDialog
     {
-        public static byte[] NpcSay(string Text)
+        public HashSet<byte[]> Packets; 
+        public void AddText(string Text)
         {
+            if (Packets == null)
+                Packets = new HashSet<byte[]>();
+            
             const ushort packetType = 2032;
             var Packet = new byte[16 + Text.Length];
 
@@ -25,10 +28,12 @@ namespace CrystalEmuLogin.Networking.Packets
                     *(P + 14 + I) = Convert.ToByte(Text[I]);
                 }
             }
-            return Packet;
+            Packets.Add(Packet);
         }
-        public static byte[] NpcLink(string Text, byte DialNr)
+        public void AddOption(string Text, byte DialNr)
         {
+            if (Packets == null)
+                Packets = new HashSet<byte[]>();
             const ushort packetType = 2032;
             var Packet = new byte[16 + Text.Length];
 
@@ -45,11 +50,12 @@ namespace CrystalEmuLogin.Networking.Packets
                     *(P + 14 + I) = Convert.ToByte(Text[I]);
                 }
             }
-            return Packet;
+            Packets.Add(Packet);
         }
-
-        public static byte[] NpcInput(string Text, byte DialNr)
+        public void AddInputbox(string Text, byte DialNr)
         {
+            if (Packets == null)
+                Packets = new HashSet<byte[]>();
             const ushort packetType = 2032;
             var Packet = new byte[16 + Text.Length];
 
@@ -66,11 +72,12 @@ namespace CrystalEmuLogin.Networking.Packets
                     *(P + 14 + I) = Convert.ToByte(Text[I]);
                 }
             }
-            return Packet;
+            Packets.Add(Packet);
         }
-
-        public static byte[] NpcFace(short Face)
+        public void AddFace(ushort FaceID)
         {
+            if (Packets == null)
+                Packets = new HashSet<byte[]>();
             const ushort packetType = 2032;
             var Packet = new byte[16];
 
@@ -80,15 +87,16 @@ namespace CrystalEmuLogin.Networking.Packets
                 *((ushort*)(P + 2)) = packetType;
                 *(P + 4) = 10;
                 *(P + 6) = 10;
-                *((ushort*)(P + 8)) = (ushort)Face;
+                *((ushort*)(P + 8)) = FaceID;
                 *(P + 10) = 0xff;
                 *(P + 11) = 4;
             }
-            return Packet;
+            Packets.Add(Packet);
         }
-
-        public static byte[] NpcDone()
+        public HashSet<byte[]> Finish()
         {
+            if (Packets == null)
+                Packets = new HashSet<byte[]>();
             const ushort packetType = 2032;
             var Packet = new byte[16];
 
@@ -99,8 +107,10 @@ namespace CrystalEmuLogin.Networking.Packets
                 *(P + 10) = 0xff;
                 *(P + 11) = 100;
             }
-
-            return Packet;
+            Packets.Add(Packet);
+            return Packets;
         }
+
+        public static implicit operator HashSet<byte[]>(MsgDialog Packet) => Packet.Finish();
     }
 }

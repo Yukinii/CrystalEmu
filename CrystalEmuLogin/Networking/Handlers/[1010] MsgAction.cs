@@ -89,11 +89,12 @@ namespace CrystalEmuLogin.Networking.Handlers
             else
                 Player.Disconnect();
 
+            var Dialog = new MsgDialog();
+            Dialog.AddText("Hello my friend! Have I answered all your questions in a satisfying way?");
+            Dialog.AddOption("You haven't answered any of my questions!", 255);
+            Dialog.AddFace(10);
+            Player.Send(Dialog);
 
-            Player.Send(MsgDialog.NpcSay("Hello!"));
-            Player.Send(MsgDialog.NpcLink("Hi!", 255));
-            Player.Send(MsgDialog.NpcFace(70));
-            Player.Send(MsgDialog.NpcDone());
             Player.Send(CoPacket.MsgTime());
         }
     }
