@@ -20,7 +20,7 @@ My casing is very strict. It's almost always PascalCasing. Private's have a unde
 
 #Working Things:
 
-* 1004 - Server -> Client yes, Client -> Server no
+* 1004 - Server -> Client done. Client -> Server not started
 * 1005 - Walking, no dmap checks yet
 * 1006 - Mostly complete. Maybe one or two values missing
 * 1009 - Ping
@@ -30,4 +30,4 @@ My casing is very strict. It's almost always PascalCasing. Private's have a unde
 * 1033 - Seems to be unsupported by the 4348 client
 * 1055 - Done
 * 1052 - Everything
-* 2032 - Work in progress
+* 2032 - Server -> Client done. Client -> Server not started
