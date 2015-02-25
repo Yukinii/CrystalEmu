@@ -19,7 +19,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
             try
             {
                 Console.Write("Trying to open Database Connection...");
-                var PipeFactory = new ChannelFactory<IDataExchange>(new NetTcpBinding(), new EndpointAddress("net.tcp://192.168.0.2/Database"));
+                var PipeFactory = new ChannelFactory<IDataExchange>(new NetTcpBinding(), new EndpointAddress("net.tcp://192.168.0.4/Database"));
                 Core.DbServerConnection = PipeFactory.CreateChannel();
 
                 if (!await PingDB())
@@ -115,7 +115,7 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
 
             return new ServerInfo
             {
-                IP =await IPC.Get(Exchange, "ServerIP", "192.168.0.2"),
+                IP =await IPC.Get(Exchange, "ServerIP", "192.168.0.4"),
                 Port =await IPC.Get(Exchange, "ServerPort", 5816)
             };
         }

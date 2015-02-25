@@ -330,7 +330,7 @@ namespace CrystalEmuLogin.PlayerFunctions
 
         public Player(YukiSocket YukiSocket)
         {
-            ServerInfo = new ServerInfo { IP = "192.168.0.2", Port = 5816 };
+            ServerInfo = new ServerInfo { IP = "192.168.0.4", Port = 5816 };
             Socket = YukiSocket;
             Equipment = new ConcurrentDictionary<MsgItemPosition, Item>();
         }

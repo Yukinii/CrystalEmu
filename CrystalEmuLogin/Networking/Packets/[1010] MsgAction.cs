@@ -1,5 +1,5 @@
-﻿using System;
-using CrystalEmuLib.Enums;
+﻿using CrystalEmuLib.Enums;
+using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Networking.Packets;
 
 namespace CrystalEmuLogin.Networking.Packets
@@ -32,22 +32,23 @@ namespace CrystalEmuLogin.Networking.Packets
             get { return (ushort)(Offset16Big >> 16); }
             set { Offset16Big = (uint)((value << 16) | Offset16); }
         }
-       
+
         public static implicit operator MsgAction(byte[] Buffer)
         {
             var Packet = new MsgAction
             {
-                TimeStamp = BitConverter.ToUInt32(Buffer, 4),
-                UID = BitConverter.ToUInt32(Buffer, 8),
-                Offset12 = BitConverter.ToUInt16(Buffer, 12),
-                Offset14 =  BitConverter.ToUInt16(Buffer, 14),
-                Offset16 = BitConverter.ToUInt16(Buffer, 16),
-                Offset18 = BitConverter.ToUInt16(Buffer, 18),
-                Offset20 = BitConverter.ToUInt16(Buffer, 20),
-                Action = (MsgActionType)BitConverter.ToUInt32(Buffer, 22)
+                TimeStamp = Buffer.ToUInt(4),
+                UID = Buffer.ToUInt(8),
+                Offset12 = Buffer.ToUShort(12),
+                Offset14 = Buffer.ToUShort(14),
+                Offset16 = Buffer.ToUShort(16),
+                Offset18 = Buffer.ToUShort(18),
+                Offset20 = Buffer.ToUShort(20),
+                Action = (MsgActionType)Buffer[22]
             };
             return Packet;
         }
+
         public static implicit operator byte[] (MsgAction Packet)
         {
             var P = new Packet(PacketID.MsgAction, 28);

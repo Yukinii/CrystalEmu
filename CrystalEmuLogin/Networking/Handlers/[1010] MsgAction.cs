@@ -89,10 +89,11 @@ namespace CrystalEmuLogin.Networking.Handlers
             else
                 Player.Disconnect();
 
-            Player.Send(CoPacket.MsgDialog("Hello!",0,10, MsgDialogType.Text));
-            Player.Send(CoPacket.MsgDialog("Hi!",1,0, MsgDialogType.Link));
-            Player.Send(CoPacket.MsgDialog("",0,10,MsgDialogType.Face));
-            Player.Send(CoPacket.MsgDialog("",0,0,MsgDialogType.End));
+
+            Player.Send(MsgDialog.NpcSay("Hello!"));
+            Player.Send(MsgDialog.NpcLink("Hi!", 255));
+            Player.Send(MsgDialog.NpcFace(70));
+            Player.Send(MsgDialog.NpcDone());
             Player.Send(CoPacket.MsgTime());
         }
     }

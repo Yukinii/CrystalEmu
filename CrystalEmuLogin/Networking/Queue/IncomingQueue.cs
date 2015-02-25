@@ -46,6 +46,11 @@ namespace CrystalEmuLogin.Networking.Queue
                             MsgLogin.Handle((Player)Pi.Owner, Pi.Packet);
                             break;
                         }
+                        default:
+                        {
+                            Core.WriteLine("Unknown Packet: " + Pi.Packet.PacketID(), ConsoleColor.DarkRed);
+                            break;
+                        }
                     }
                 }
             }

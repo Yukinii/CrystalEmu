@@ -25,7 +25,7 @@ namespace CrystalEmuDatabase
         private static void CreateService()
         {
             var DataExchangePipe = new NetTcpBinding { ReceiveTimeout = TimeSpan.MaxValue, SendTimeout = TimeSpan.MaxValue};
-            _DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.2"));
+            _DataExchangeHost = new ServiceHost(typeof(DataExchange), new Uri("net.tcp://192.168.0.4"));
             _DataExchangeHost.AddServiceEndpoint(typeof(IDataExchange), DataExchangePipe, "Database");
             _DataExchangeHost.Faulted += DataExchangeHostFaulted;
             _DataExchangeHost.Closed += DataExchangeHostClosed;

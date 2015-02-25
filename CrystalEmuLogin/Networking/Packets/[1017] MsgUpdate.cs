@@ -7,7 +7,7 @@ namespace CrystalEmuLogin.Networking.Packets
     {
         public static byte[] MsgUpdate(uint UID, ulong Value, MsgUpdateType Type)
         {
-            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgUpdate, 28);
+            var P = new Packet(PacketID.MsgUpdate, 28);
             P.Write(UID);
             P.Write(1);
             P.Write((uint)Type);

@@ -1,5 +1,4 @@
-﻿using System;
-using CrystalEmuLib.Enums;
+﻿using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Networking.Packets;
 
@@ -9,10 +8,7 @@ namespace CrystalEmuLogin.Networking.Packets
     {
         public uint Color;
         public MsgTextType Type;
-        public uint Unknown;
         public uint TimeStamp;
-        public uint ToFace;
-        public uint FromFace;
         public string From;
         public string To;
         public string Message;
@@ -21,12 +17,9 @@ namespace CrystalEmuLogin.Networking.Packets
         {
             var Packet = new MsgText
             {
-                Color = BitConverter.ToUInt32(Buffer, 4),
-                Type = (MsgTextType)BitConverter.ToUInt16(Buffer, 8),
-                Unknown = BitConverter.ToUInt32(Buffer, 10),
-                TimeStamp = BitConverter.ToUInt32(Buffer, 12),
-                ToFace = BitConverter.ToUInt32(Buffer, 16),
-                FromFace = BitConverter.ToUInt32(Buffer, 20),
+                Color = Buffer.ToUInt(4),
+                Type = (MsgTextType)Buffer.ToUShort(8),
+                TimeStamp = Buffer.ToUInt(12),
                 From = Buffer.StringFrom(26, (int)Buffer.ToUInt(25))
             };
             Packet.To = Buffer.StringFrom(27 + Packet.From.Length, (int)Buffer.ToUInt(26 + Packet.From.Length));

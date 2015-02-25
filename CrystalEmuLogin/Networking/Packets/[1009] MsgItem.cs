@@ -1,16 +1,32 @@
 ﻿using CrystalEmuLib.Enums;
+using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Networking.Packets;
 
 namespace CrystalEmuLogin.Networking.Packets
-{
-    public partial class CoPacket
+{ 
+    public struct MsgItem
     {
-        public static byte[] MsgItem(uint UID, uint Value, MsgItemType Type)
+        public uint UID;
+        public uint Value;
+        public MsgItemType Type;
+
+        public static implicit operator MsgItem(byte[] Buffer)
         {
-            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgItem, 20);
-            P.Write(UID);
-            P.Write(Value);
-            P.Write((uint)Type);
+            var Packet = new MsgItem
+            {
+                UID = Buffer.ToUInt(4),
+                Value = Buffer.ToUInt(8),
+                Type = (MsgItemType)Buffer.ToUShort(12)
+            };
+            return Packet;
+        }
+
+        public static implicit operator byte[] (MsgItem Packet)
+        {
+            var P = new Packet(PacketID.MsgItem, 20);
+            P.Write(Packet.UID);
+            P.Write(Packet.Value);
+            P.Write((uint)Packet.Type);
             return P.Finish();
         }
     }

@@ -13,7 +13,7 @@ namespace CrystalEmuLogin.Networking.Packets
             if (Player?.ServerInfo == null)
                 return null;
             Console.WriteLine("{0} -> transfer to -> {1}:{2}", Player.Username, Player.ServerInfo?.IP, Player.ServerInfo.Port);
-            var P = new CrystalEmuLib.Networking.Packets.Packet(PacketID.MsgTransfer, 32);
+            var P = new Packet(PacketID.MsgTransfer, 32);
             P.Write(Player.UID);
             P.Write(Security.Hash((short)(Player.UID - 1000000), (short)(Player.UID - 999999)));
             P.Write(Player.ServerInfo.IP, false);
