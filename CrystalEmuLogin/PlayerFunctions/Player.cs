@@ -15,7 +15,7 @@ namespace CrystalEmuLogin.PlayerFunctions
     public class Player
     {
         #region private
-        private string _Name = "ERROR";
+        private string _Name = "SELECTOR";
         private string _Spouse = "None";
         private byte _Stamina;
         private byte _XpTimer;
@@ -44,7 +44,7 @@ namespace CrystalEmuLogin.PlayerFunctions
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
-        public readonly ConcurrentDictionary<uint, Player> Characters; 
+        public readonly ConcurrentDictionary<int, Player> Characters; 
         public readonly ConcurrentDictionary<MsgItemPosition, Item> Equipment;
         public Vector3 Location;
         public uint UID;
@@ -305,13 +305,13 @@ namespace CrystalEmuLogin.PlayerFunctions
             ServerInfo = new ServerInfo { IP = "192.168.0.4", Port = 5816 };
             Socket = YukiSocket;
             Equipment = new ConcurrentDictionary<MsgItemPosition, Item>();
-            Characters = new ConcurrentDictionary<uint, Player>();
+            Characters = new ConcurrentDictionary<int, Player>();
             Location = new Vector3(this, 63, 109, 1010);
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
         public void Send(HashSet<byte[]> Packet) => OutgoingQueue.Add(this, Packet);
-        public void ForceSend(byte[] Packet) => Socket.Send(Packet);
+        public void ForceSend(byte[] Packet) => Socket?.Send(Packet);
         public void Disconnect() => Socket.Disconnect();
 
     }

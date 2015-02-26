@@ -84,9 +84,9 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
 
             Player.Location = new Vector3(Player, 61, 109, 1010)
             {
-                X = await IPC.Get(Exchange, "X", 61),
-                Y = await IPC.Get(Exchange, "Y", 109),
-                Z = await IPC.Get(Exchange, "Z", 1010)
+                X = await IPC.Get(Exchange, "X", 096),
+                Y = await IPC.Get(Exchange, "Y", 181),
+                Z = await IPC.Get(Exchange, "Z", 1040)
             };
 
             return true;
@@ -96,19 +96,24 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
         {
             if (!await PingDB())
                 return false;
-            var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
-            Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
 
-            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + "SELECTOR\\PlayerInfo.ini", "Character");
+            if (string.IsNullOrEmpty(Player.Username))
+            {
+                var TempExchange = new DataExchange(ExchangeType.GetUsernameByUID, Player.UID.ToString(), "");
+                Player.Username = await IPC.Get(TempExchange, Player.UID.ToString(), "0");
+            }
+
+            var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username+"\\"+Player.Name +"\\PlayerInfo.ini", "Character");
             Player.Name = await IPC.Get(Exchange, "Name", "SELECTOR");
 
             Player.InitializeDatabaseConnection();
 
             Player.Spouse = await IPC.Get(Exchange, "Spouse", "CrystalEmu");
-            Player.Model = await IPC.Get(Exchange, "Model", 1003);
+            Player.Model = await IPC.Get(Exchange, "Model", 355  );
             Player.Hair = await IPC.Get(Exchange, "Hair", 310);
             Player.Class = (byte)await IPC.Get(Exchange, "Class", 10);
             Player.Level = (byte)await IPC.Get(Exchange, "Level", 1);
+            Player.Direction = 7;
             return true;
         }
         public static async Task<ServerInfo> FindServer(Player Player)

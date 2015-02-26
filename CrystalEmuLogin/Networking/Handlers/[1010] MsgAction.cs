@@ -19,9 +19,13 @@ namespace CrystalEmuLogin.Networking.Handlers
                     ProcessLogin(Player, Packet);
                     break;
                 }
+                case MsgActionType.FinishTeleport:
+                {
+                    ProcessFinishTeleport(Player, Packet);
+                    break;
+                }
                 case MsgActionType.Jump:
                 case MsgActionType.Action:
-                case MsgActionType.ChangeDirection:
                 case MsgActionType.ChangeFace:
                 case MsgActionType.ChangeMap:
                 case MsgActionType.ChangePkMode:
@@ -40,7 +44,6 @@ namespace CrystalEmuLogin.Networking.Handlers
                 case MsgActionType.EndXpList:
                 case MsgActionType.EntityRemove:
                 case MsgActionType.EntitySpawn:
-                case MsgActionType.FinishTeleport:
                 case MsgActionType.Hotkeys:
                 case MsgActionType.Leveled:
                 case MsgActionType.Mine:
@@ -68,26 +71,9 @@ namespace CrystalEmuLogin.Networking.Handlers
             }
         }
 
-        private static async void ProcessLogin(Player Player, MsgAction Packet)
+        private static void ProcessFinishTeleport(Player Player, MsgAction Packet)
         {
-            Kernel.Players.TryAdd(Player.UID, Player);
-
-            await DatabaseConnection.LoadCharacter(Player);
-            if (await DatabaseConnection.FindSpawnPoint(Player))
-            {
-                Player.Send(CoPacket.MsgHero(Player));
-
-                Packet.TimeStamp = (uint)Environment.TickCount;
-                Packet.UID = Player.UID;
-                Packet.Offset12Big = Player.Location.Z;
-                Packet.Offset16 = Player.Location.X;
-                Packet.Offset18 = Player.Location.Y;
-                Packet.Action = MsgActionType.MapShow;
-
-                Player.Send(Packet);
-           }
-            else
-                Player.Disconnect();
+            Selector.LoadCharacters(Player);
 
             var Dialog = new MsgDialog();
             Dialog.AddText("Noooooooooooo my friend! Its a TOTAL RECALL!");
@@ -96,8 +82,30 @@ namespace CrystalEmuLogin.Networking.Handlers
             Dialog.AddOption("Fuuuuuuuuuuck youuuu!", 255);
             Dialog.AddFace(194);
             Player.Send(Dialog);
+            Player.Send(new MsgText { Message = "Ready!", From = "CrystalEmu", Type = MsgTextType.Action });
+        }
+        
+        private static async void ProcessLogin(Player Player, MsgAction Packet)
+        {
+            Kernel.Players.TryAdd(Player.UID, Player);
 
-            Player.Send(CoPacket.MsgTime());
+            await DatabaseConnection.LoadCharacter(Player);
+            if (await DatabaseConnection.FindSpawnPoint(Player))
+            {
+                Player.Send(CoPacket.MsgHero(Player));
+                Packet.TimeStamp = (uint)Environment.TickCount;
+                Packet.UID = Player.UID;
+                Packet.Offset12Big = Player.Location.Z;
+                Packet.Offset16 = Player.Location.X;
+                Packet.Offset18 = Player.Location.Y;
+                Packet.Action = MsgActionType.MapShow;
+                Player.Send(Packet);
+           }
+            else
+                Player.Disconnect();
+
+            Player.Send(CoPacket.MsgUpdate(Player.UID, 0x20, MsgUpdateType.StatusEffect));
+            Player.Send(new MsgText { Message = "Loading...", From = "CrystalEmu", Type = MsgTextType.Action });
         }
     }
 }

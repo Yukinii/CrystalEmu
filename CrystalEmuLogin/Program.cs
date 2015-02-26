@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using CrystalEmuLib;
+using CrystalEmuLogin.CoreSystems;
 using CrystalEmuLogin.Networking.IPC_Comms;
 using CrystalEmuLogin.Networking.Queue;
 using CrystalEmuLogin.Networking.Sockets;
@@ -14,7 +15,8 @@ namespace CrystalEmuLogin
             Console.Title = "CrystalEmu - Login Server";
             while (!DatabaseConnection.Open().Result)
                 Thread.Sleep(100);
-            
+
+            Selector.LoadSpawnPoints();
             IncomingQueue.Start();
             OutgoingQueue.Start();
             LoginSocket.Open();

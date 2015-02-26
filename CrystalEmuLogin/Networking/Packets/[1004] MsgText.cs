@@ -1,4 +1,5 @@
-﻿using CrystalEmuLib.Enums;
+﻿using System.Security.Cryptography;
+using CrystalEmuLib.Enums;
 using CrystalEmuLib.Extensions;
 using CrystalEmuLib.Networking.Packets;
 
@@ -29,6 +30,12 @@ namespace CrystalEmuLogin.Networking.Packets
 
         public static implicit operator byte[] (MsgText Packet)
         {
+            if (string.IsNullOrEmpty(Packet.From))
+                Packet.From = "System";
+            if (string.IsNullOrEmpty(Packet.To))
+                Packet.To = "ALLUSERS";
+            if (string.IsNullOrEmpty(Packet.Message))
+                Packet.Message = "ANSWER_OK";
             var P = new Packet(PacketID.MsgText, (ushort)(21 + Packet.From.Length + Packet.To.Length + Packet.Message.Length));
             P.Write(Packet.Color);
             P.Write((ushort)Packet.Type);
