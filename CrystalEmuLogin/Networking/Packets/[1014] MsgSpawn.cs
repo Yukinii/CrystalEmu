@@ -25,8 +25,8 @@ namespace CrystalEmuLogin.Networking.Packets
             P.Write(Left?.ID ?? 0);
             P.Write(0);
             P.Write(0);
-            P.Write(Player.X);
-            P.Write(Player.Y);
+            P.Write(Player.Location.X);
+            P.Write(Player.Location.Y);
             P.Write(Player.Hair);
             P.Write(Player.Direction);
             P.Write(Player.Action);

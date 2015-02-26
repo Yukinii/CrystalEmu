@@ -7,6 +7,7 @@ using CrystalEmuLib.Enums;
 using CrystalEmuLib.IPC_Comms.Database;
 using CrystalEmuLib.IPC_Comms.Shared;
 using CrystalEmuLogin.PlayerFunctions;
+using CrystalEmuLogin.World;
 
 namespace CrystalEmuLogin.Networking.IPC_Comms
 {
@@ -80,9 +81,13 @@ namespace CrystalEmuLogin.Networking.IPC_Comms
                 return false;
 
             var Exchange = new DataExchange(ExchangeType.LoadAccountValue, Core.AccountDatabasePath + Player.Username + "\\PlayerInfo.ini", "Account");
-            Player.X = await IPC.Get(Exchange, "TransferX", 61);
-            Player.Y = await IPC.Get(Exchange, "TransferY", 109);
-            Player.Z = await IPC.Get(Exchange, "TransferMap", 1010);
+
+            Player.Location = new Vector3(Player, 61, 109, 1010)
+            {
+                X = await IPC.Get(Exchange, "X", 61),
+                Y = await IPC.Get(Exchange, "Y", 109),
+                Z = await IPC.Get(Exchange, "Z", 1010)
+            };
 
             return true;
         }

@@ -79,9 +79,9 @@ namespace CrystalEmuLogin.Networking.Handlers
 
                 Packet.TimeStamp = (uint)Environment.TickCount;
                 Packet.UID = Player.UID;
-                Packet.Offset12Big = Player.Z;
-                Packet.Offset16 = Player.X;
-                Packet.Offset18 = Player.Y;
+                Packet.Offset12Big = Player.Location.Z;
+                Packet.Offset16 = Player.Location.X;
+                Packet.Offset18 = Player.Location.Y;
                 Packet.Action = MsgActionType.MapShow;
 
                 Player.Send(Packet);
@@ -90,9 +90,11 @@ namespace CrystalEmuLogin.Networking.Handlers
                 Player.Disconnect();
 
             var Dialog = new MsgDialog();
-            Dialog.AddText("Hello my friend! Have I answered all your questions in a satisfying way?");
+            Dialog.AddText("Noooooooooooo my friend! Its a TOTAL RECALL!");
+            Dialog.AddText("No my friend! Have I answered your questions satisfactorily and offered good customer service?");
             Dialog.AddOption("You haven't answered any of my questions!", 255);
-            Dialog.AddFace(10);
+            Dialog.AddOption("Fuuuuuuuuuuck youuuu!", 255);
+            Dialog.AddFace(194);
             Player.Send(Dialog);
 
             Player.Send(CoPacket.MsgTime());

@@ -8,6 +8,7 @@ using CrystalEmuLib.Sockets;
 using CrystalEmuLogin.Items;
 using CrystalEmuLogin.Networking.Packets;
 using CrystalEmuLogin.Networking.Queue;
+using CrystalEmuLogin.World;
 
 namespace CrystalEmuLogin.PlayerFunctions
 {
@@ -34,9 +35,6 @@ namespace CrystalEmuLogin.PlayerFunctions
         private ushort _AttributePoints;
         private uint _CurrentHP;
         private uint _CurrentMP;
-        private ushort _X;
-        private ushort _Y;
-        private ushort _Z;
         private uint _MaximumHP;
         private uint _MaximumMP;
         private byte _Action;
@@ -46,7 +44,9 @@ namespace CrystalEmuLogin.PlayerFunctions
         public ServerInfo ServerInfo;
         public DataExchange LoadExchange;
         public DataExchange SaveExchange;
+        public readonly ConcurrentDictionary<uint, Player> Characters; 
         public readonly ConcurrentDictionary<MsgItemPosition, Item> Equipment;
+        public Vector3 Location;
         public uint UID;
         public string Username;
         public string Password;
@@ -294,36 +294,6 @@ namespace CrystalEmuLogin.PlayerFunctions
             }
         }
 
-        public ushort X
-        {
-            get { return _X; }
-            set
-            {
-                _X = value;
-                IPC.Set(SaveExchange, "X", value);
-            }
-        }
-
-        public ushort Y
-        {
-            get { return _Y; }
-            set
-            {
-                _Y = value;
-                IPC.Set(SaveExchange, "Y", value);
-            }
-        }
-
-        public ushort Z
-        {
-            get { return _Z; }
-            set
-            {
-                _Z = value;
-                IPC.Set(SaveExchange, "Z", value);
-            }
-        }
-
         public byte Action
         {
             get { return _Action; }
@@ -335,6 +305,8 @@ namespace CrystalEmuLogin.PlayerFunctions
             ServerInfo = new ServerInfo { IP = "192.168.0.4", Port = 5816 };
             Socket = YukiSocket;
             Equipment = new ConcurrentDictionary<MsgItemPosition, Item>();
+            Characters = new ConcurrentDictionary<uint, Player>();
+            Location = new Vector3(this, 63, 109, 1010);
         }
         public void InitializeDatabaseConnection() => SaveExchange = new DataExchange(ExchangeType.SaveCharacterValue, Core.AccountDatabasePath + Username + @"\" + Name + @"\PlayerInfo.ini", "Character");
         public void Send(byte[] Packet) => OutgoingQueue.Add(this, Packet);
